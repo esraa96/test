@@ -630,13 +630,13 @@
           </p>
         </div>
 
-        <div
-          class="stagger-container grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8"
-        >
+        <div class="stagger-container space-y-8">
+          <!-- الصف الأول: 4 كروت -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
           <!-- الإعاشة والتموين -->
           <div class="service-one__single stagger-item">
             <div
-              class="service-one__content relative rounded-2xl bg-white shadow-lg group hover:shadow-xl transition-all duration-300"
+              class="service-one__content relative rounded-2xl bg-white shadow-lg group hover:shadow-xl transition-all duration-300 flex flex-col h-full"
             >
               <div class="service-one__image relative h-48 rounded-t-2xl">
                 <img
@@ -674,7 +674,7 @@
           <!-- الخدمات اللوجستية -->
           <div class="service-one__single stagger-item">
             <div
-              class="service-one__content relative rounded-2xl bg-white shadow-lg group hover:shadow-xl transition-all duration-300"
+              class="service-one__content relative rounded-2xl bg-white shadow-lg group hover:shadow-xl transition-all duration-300 flex flex-col h-full"
             >
               <div class="service-one__image relative h-48 rounded-t-2xl">
                 <img
@@ -712,7 +712,7 @@
           <!-- الضيافة والفندقة -->
           <div class="service-one__single stagger-item">
             <div
-              class="service-one__content relative rounded-2xl bg-white shadow-lg group hover:shadow-xl transition-all duration-300"
+              class="service-one__content relative rounded-2xl bg-white shadow-lg group hover:shadow-xl transition-all duration-300 flex flex-col h-full"
             >
               <div class="service-one__image relative h-48 rounded-t-2xl">
                 <img
@@ -750,7 +750,7 @@
           <!-- خدمات الحج -->
           <div class="service-one__single stagger-item">
             <div
-              class="service-one__content relative rounded-2xl bg-white shadow-lg group hover:shadow-xl transition-all duration-300"
+              class="service-one__content relative rounded-2xl bg-white shadow-lg group hover:shadow-xl transition-all duration-300 flex flex-col h-full"
             >
               <div class="service-one__image relative h-48 rounded-t-2xl">
                 <img
@@ -784,11 +784,15 @@
               ></a>
             </div>
           </div>
-
+          </div>
+          
+          <!-- الصف الثاني: 2 كرت في الوسط -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+          <div class="hidden lg:block"></div>
           <!-- خدمات العمرة -->
           <div class="service-one__single stagger-item">
             <div
-              class="service-one__content relative rounded-2xl bg-white shadow-lg group hover:shadow-xl transition-all duration-300"
+              class="service-one__content relative rounded-2xl bg-white shadow-lg group hover:shadow-xl transition-all duration-300 flex flex-col h-full"
             >
               <div class="service-one__image relative h-48 rounded-t-2xl">
                 <img
@@ -826,7 +830,7 @@
           <!-- الخدمات المجتمعية -->
           <div class="service-one__single stagger-item">
             <div
-              class="service-one__content relative rounded-2xl bg-white shadow-lg group hover:shadow-xl transition-all duration-300"
+              class="service-one__content relative rounded-2xl bg-white shadow-lg group hover:shadow-xl transition-all duration-300 flex flex-col h-full"
             >
               <div class="service-one__image relative h-48 rounded-t-2xl">
                 <img
@@ -859,6 +863,8 @@
                 class="service-one__link-overlay absolute inset-0 z-10"
               ></a>
             </div>
+          </div>
+          <div class="hidden lg:block"></div>
           </div>
         </div>
       </div>
