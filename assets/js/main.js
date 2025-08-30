@@ -1,10 +1,6 @@
 // Constants
 const COUNTER_STEPS = 100;
 const ANIMATION_INTERVAL_MS = 20;
-const CARD_WIDTH = 320; // عرض الكارد الأساسي
-const CARD_MARGIN = 32; // المسافات بين الكاردات
-const CARDS_PER_VIEW = 3; // عدد الكاردات المعروضة
-const RIPPLE_ANIMATION_DURATION = 600; // مدة أنيميشن الـ ripple
 
 // Main Application
 class CharityWebsite {
@@ -12,12 +8,6 @@ class CharityWebsite {
     this.observers = [];
     this.timers = [];
     this.animatedCounters = new Set();
-    this.eventListeners = [];
-    this.heroLightRays = null;
-    this.heroPattern = null;
-    this.throttledScroll = null;
-    this.heroMouseMove = null;
-    this.heroMouseLeave = null;
     this.init();
   }
 
@@ -26,7 +16,6 @@ class CharityWebsite {
     this.setupLoading();
     this.setupScrollAnimations();
     this.setupCounters();
-    this.setupStatsSlider();
     this.setupMobileMenu();
     this.setupImageHovers();
     this.setupSmoothScroll();
@@ -49,7 +38,7 @@ class CharityWebsite {
         setTimeout(() => {
           loadingOverlay.classList.add("hidden");
           setTimeout(() => loadingOverlay.remove(), 300);
-        }, 500);
+        }, 250);
       }
     });
   }
@@ -136,94 +125,7 @@ class CharityWebsite {
     return num.toString();
   }
 
-  setupStatsSlider() {
-    const track = document.querySelector(".stats-slider-track");
-    const dots = document.querySelectorAll(".dot-btn");
-    const container = document.querySelector(".stats-slider-container");
-    const slider = document.querySelector(".stats-slider");
 
-    if (!track || !dots.length || !container || !slider) return;
-
-    const uniqueSlidesCount = 6; // عدد الكروت الأصلية
-    let current = 0;
-    let timer;
-    let cardsToShow = CARDS_PER_VIEW;
-    const totalCardWidth = CARD_WIDTH + CARD_MARGIN;
-    let isTransitioning = false;
-
-    const updateSliderView = () => {
-      if (window.innerWidth < 768) cardsToShow = 1;
-      else if (window.innerWidth < 1200) cardsToShow = 2;
-      else cardsToShow = CARDS_PER_VIEW;
-
-      const visibleWidth = totalCardWidth * cardsToShow - CARD_MARGIN;
-      slider.style.width = `${visibleWidth}px`;
-      slider.style.margin = "0 auto";
-      slider.style.overflow = "hidden";
-    };
-
-    const moveTo = (index, withTransition = true) => {
-      if (withTransition) {
-        track.style.transition = "transform 0.5s ease-in-out";
-      } else {
-        track.style.transition = "none";
-      }
-      const moveDistance = index * totalCardWidth;
-      track.style.transform = `translateX(-${moveDistance}px)`;
-      current = index;
-    };
-
-    const updateDots = () => {
-      const dotIndex = current % uniqueSlidesCount;
-      dots.forEach((dot, i) => {
-        if (dot) dot.classList.toggle("active", i === dotIndex);
-      });
-    };
-
-    track.addEventListener("transitionend", () => {
-      isTransitioning = false;
-      // إذا وصلنا إلى كارت مكرر في النهاية
-      if (current >= uniqueSlidesCount) {
-        // نعود إلى الكارت الأصلي المقابل بدون حركة انتقالية
-        moveTo(current % uniqueSlidesCount, false);
-      }
-    });
-
-    const next = () => {
-      if (isTransitioning) return;
-      isTransitioning = true;
-      moveTo(current + 1);
-      updateDots();
-    };
-
-    const auto = () => {
-      if (timer) clearInterval(timer);
-      timer = setInterval(next, 3000);
-      this.timers.push(timer);
-    };
-
-    dots.forEach((dot, i) => {
-      if (dot) {
-        dot.addEventListener("click", () => {
-          if (isTransitioning || i >= uniqueSlidesCount) return;
-          isTransitioning = true;
-          clearInterval(timer);
-          moveTo(i);
-          updateDots();
-          setTimeout(auto, 5000);
-        });
-      }
-    });
-
-    container.addEventListener("mouseenter", () => clearInterval(timer));
-    container.addEventListener("mouseleave", auto);
-    window.addEventListener("resize", updateSliderView);
-
-    // Initial setup
-    updateSliderView();
-    updateDots();
-    auto();
-  }
 
   setupMobileMenu() {
     const navToggle = document.getElementById("navToggle");
@@ -254,25 +156,11 @@ class CharityWebsite {
     document.querySelectorAll(".image-hover").forEach((container) => {
       const img = container.querySelector("img");
       if (img) {
-        const mouseEnterHandler = () => {
-          img.classList.add('image-hover-transform');
-        };
-        const mouseLeaveHandler = () => {
-          img.classList.remove('image-hover-transform');
-        };
-        
-        container.addEventListener("mouseenter", mouseEnterHandler);
-        container.addEventListener("mouseleave", mouseLeaveHandler);
-        
-        this.eventListeners.push({
-          element: container,
-          event: "mouseenter",
-          handler: mouseEnterHandler
+        container.addEventListener("mouseenter", () => {
+          img.style.transform = "scale(1.1) rotate(2deg)";
         });
-        this.eventListeners.push({
-          element: container,
-          event: "mouseleave",
-          handler: mouseLeaveHandler
+        container.addEventListener("mouseleave", () => {
+          img.style.transform = "scale(1) rotate(0deg)";
         });
       }
     });
@@ -285,48 +173,36 @@ class CharityWebsite {
     const hero = document.querySelector(".hero");
     if (!hero) return;
 
-    // Cache DOM elements
-    this.heroLightRays = hero.querySelector(".hero-light-rays");
-    this.heroPattern = hero.querySelector(".hero-pattern");
-
-    // Helper function to apply transforms
-    const applyHeroTransforms = (xPos, yPos) => {
-      if (this.heroLightRays) {
-        this.heroLightRays.style.transform = `translate(${xPos}px, ${yPos}px)`;
-      }
-      if (this.heroPattern) {
-        this.heroPattern.style.transform = `translate(${-xPos * 0.5}px, ${-yPos * 0.5}px)`;
-      }
-    };
+    // Cache DOM elements to avoid repeated queries
+    const lightRays = hero.querySelector(".hero-light-rays");
+    const pattern = hero.querySelector(".hero-pattern");
 
     // Mouse movement parallax effect
-    this.heroMouseMove = (e) => {
+    hero.addEventListener("mousemove", (e) => {
       const { clientX, clientY } = e;
       const { innerWidth, innerHeight } = window;
 
       const xPos = (clientX / innerWidth - 0.5) * 20;
       const yPos = (clientY / innerHeight - 0.5) * 20;
 
-      applyHeroTransforms(xPos, yPos);
-    };
+      if (lightRays) {
+        lightRays.style.transform = `translate(${xPos}px, ${yPos}px)`;
+      }
+
+      if (pattern) {
+        pattern.style.transform = `translate(${-xPos * 0.5}px, ${-yPos * 0.5}px)`;
+      }
+    });
 
     // Reset on mouse leave
-    this.heroMouseLeave = () => {
-      applyHeroTransforms(0, 0);
-    };
+    hero.addEventListener("mouseleave", () => {
+      if (lightRays) {
+        lightRays.style.transform = "translate(0px, 0px)";
+      }
 
-    hero.addEventListener("mousemove", this.heroMouseMove);
-    hero.addEventListener("mouseleave", this.heroMouseLeave);
-
-    this.eventListeners.push({
-      element: hero,
-      event: "mousemove",
-      handler: this.heroMouseMove
-    });
-    this.eventListeners.push({
-      element: hero,
-      event: "mouseleave",
-      handler: this.heroMouseLeave
+      if (pattern) {
+        pattern.style.transform = "translate(0px, 0px)";
+      }
     });
   }
 
@@ -350,7 +226,7 @@ class CharityWebsite {
     progressBar.className = "scroll-progress";
     document.body.appendChild(progressBar);
 
-    this.throttledScroll = this.throttle(() => {
+    const throttledScroll = this.throttle(() => {
       const scrollTop = document.documentElement.scrollTop;
       const scrollHeight =
         document.documentElement.scrollHeight -
@@ -363,60 +239,17 @@ class CharityWebsite {
 
       // Scroll rotate patterns
       this.updateScrollRotate(scrollTop);
-    }, 50);
+    }, 16);
 
-    window.addEventListener("scroll", this.throttledScroll);
-    
-    this.eventListeners.push({
-      element: window,
-      event: "scroll",
-      handler: this.throttledScroll
-    });
+    window.addEventListener("scroll", throttledScroll);
   }
 
   updateScrollRotate(scrollTop) {
     const patterns = document.querySelectorAll(".scroll-rotate");
     patterns.forEach((pattern) => {
-      const rotation = scrollTop * 0.002; // تقليل سرعة الدوران من 0.008 إلى 0.002
-      const currentTransform = pattern.style.transform || "";
-      const baseRotation = currentTransform.match(/rotateZ\(([^)]+)\)/);
-      const baseValue = baseRotation ? parseFloat(baseRotation[1]) : 0;
-      pattern.style.transform = `rotateZ(${baseValue + rotation}deg)`;
+      const rotation = scrollTop * 0.008;
+      pattern.style.transform = `rotateZ(${rotation}deg)`;
     });
-    
-    // Partners background scroll effect
-    const partnersBg = document.querySelector('.partners-bg-scroll');
-    if (partnersBg) {
-      const partnersSection = document.getElementById('partners');
-      if (partnersSection) {
-        const rect = partnersSection.getBoundingClientRect();
-        const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
-        
-        if (isVisible) {
-          const scrollProgress = Math.max(0, Math.min(1, (window.innerHeight - rect.top) / (window.innerHeight + rect.height)));
-          const translateY = scrollProgress * 50;
-          const scale = 1 + scrollProgress * 0.1;
-          partnersBg.style.transform = `translateY(${translateY}px) scale(${scale})`;
-        }
-      }
-    }
-    
-    // Footer background scroll effect
-    const footerBg = document.querySelector('.footer-bg-scroll');
-    if (footerBg) {
-      const footer = document.querySelector('footer');
-      if (footer) {
-        const rect = footer.getBoundingClientRect();
-        const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
-        
-        if (isVisible) {
-          const scrollProgress = Math.max(0, Math.min(1, (window.innerHeight - rect.top) / (window.innerHeight + rect.height)));
-          const translateY = scrollProgress * -30;
-          const scale = 1 + scrollProgress * 0.05;
-          footerBg.style.transform = `translateY(${translateY}px) scale(${scale})`;
-        }
-      }
-    }
   }
 
   setupParticles() {
@@ -458,7 +291,7 @@ class CharityWebsite {
         ripple.classList.add("ripple");
 
         this.appendChild(ripple);
-        setTimeout(() => ripple.remove(), RIPPLE_ANIMATION_DURATION);
+        setTimeout(() => ripple.remove(), 600);
       });
     });
   }
@@ -479,21 +312,17 @@ class CharityWebsite {
   destroy() {
     this.observers.forEach((observer) => observer.disconnect());
     this.timers.forEach((timer) => clearInterval(timer));
-    this.eventListeners.forEach(({ element, event, handler }) => {
-      element.removeEventListener(event, handler);
-    });
-    
     this.observers = [];
     this.timers = [];
-    this.eventListeners = [];
     this.animatedCounters.clear();
-    
-    // Clear cached DOM references
-    this.heroLightRays = null;
-    this.heroPattern = null;
-    this.throttledScroll = null;
-    this.heroMouseMove = null;
-    this.heroMouseLeave = null;
+    window.removeEventListener("scroll", this.throttledScroll);
+
+    // Clean up hero interactions
+    const hero = document.querySelector(".hero");
+    if (hero) {
+      hero.removeEventListener("mousemove", this.heroMouseMove);
+      hero.removeEventListener("mouseleave", this.heroMouseLeave);
+    }
   }
 }
 
@@ -510,12 +339,10 @@ class ParticleBackground {
     this.createParticles();
     this.animate();
 
-    this.resizeHandler = () => {
+    window.addEventListener("resize", () => {
       this.resize();
       this.repositionParticles();
-    };
-    
-    window.addEventListener("resize", this.resizeHandler);
+    });
   }
 
   resize() {
@@ -539,10 +366,8 @@ class ParticleBackground {
 
   repositionParticles() {
     this.particles.forEach((particle) => {
-      if (particle.x < 0) particle.x = 0;
-      if (particle.y < 0) particle.y = 0;
-      if (particle.x >= this.canvas.width) particle.x = this.canvas.width - 1;
-      if (particle.y >= this.canvas.height) particle.y = this.canvas.height - 1;
+      if (particle.x > this.canvas.width) particle.x = this.canvas.width;
+      if (particle.y > this.canvas.height) particle.y = this.canvas.height;
     });
   }
 
@@ -553,8 +378,8 @@ class ParticleBackground {
       particle.x += particle.vx;
       particle.y += particle.vy;
 
-      if (particle.x <= 0 || particle.x >= this.canvas.width) particle.vx *= -1;
-      if (particle.y <= 0 || particle.y >= this.canvas.height) particle.vy *= -1;
+      if (particle.x < 0 || particle.x > this.canvas.width) particle.vx *= -1;
+      if (particle.y < 0 || particle.y > this.canvas.height) particle.vy *= -1;
 
       this.ctx.beginPath();
       this.ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
@@ -569,13 +394,42 @@ class ParticleBackground {
     if (this.animationId) {
       cancelAnimationFrame(this.animationId);
     }
-    if (this.resizeHandler) {
-      window.removeEventListener("resize", this.resizeHandler);
-    }
   }
 }
 
-// CSS styles moved to style.css file
+// CSS for ripple effect and scroll progress
+const dynamicCSS = `
+.btn {
+    position: relative;
+    overflow: hidden;
+}
+
+@keyframes ripple-animation {
+    to {
+        transform: scale(4);
+        opacity: 0;
+    }
+}
+
+.scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 3px;
+    background: #c1912c;
+    z-index: 9999;
+    transition: width 0.1s ease;
+}
+
+.dot-btn.active {
+    background-color: #c1912c !important;
+}
+`;
+
+const style = document.createElement("style");
+style.textContent = dynamicCSS;
+document.head.appendChild(style);
 
 // Initialize when DOM is loaded
 document.addEventListener("DOMContentLoaded", () => {
