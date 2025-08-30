@@ -784,7 +784,22 @@ html {
 
 /* Scroll Rotate Pattern */
 .scroll-rotate {
-  transition: transform 0.1s ease-out;
+  transition: transform 0.3s ease-out;
+  animation: slowRotate 60s linear infinite;
+}
+
+.scroll-rotate-slow {
+  transition: transform 0.5s ease-out;
+  animation: slowRotate 80s linear infinite;
+}
+
+@keyframes slowRotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Print Styles */
