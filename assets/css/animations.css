@@ -1,0 +1,37 @@
+/* Animation styles moved from JavaScript */
+
+/* Button ripple effect */
+.btn {
+  position: relative;
+  overflow: hidden;
+}
+
+@keyframes ripple-animation {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+/* Scroll progress bar */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 3px;
+  background: #c1912c;
+  z-index: 9999;
+  transition: width 0.1s ease;
+}
+
+/* Active dot button */
+.dot-btn.active {
+  background-color: #c1912c !important;
+}
+
+/* Image hover transform */
+.image-hover-transform {
+  transform: scale(1.1) rotate(2deg);
+  transition: transform 0.3s ease;
+}

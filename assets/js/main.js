@@ -4,6 +4,7 @@ const ANIMATION_INTERVAL_MS = 20;
 const CARD_WIDTH = 320; // عرض الكارد الأساسي
 const CARD_MARGIN = 32; // المسافات بين الكاردات
 const CARDS_PER_VIEW = 3; // عدد الكاردات المعروضة
+const RIPPLE_ANIMATION_DURATION = 600; // مدة أنيميشن الـ ripple
 
 // Main Application
 class CharityWebsite {
@@ -11,6 +12,12 @@ class CharityWebsite {
     this.observers = [];
     this.timers = [];
     this.animatedCounters = new Set();
+    this.eventListeners = [];
+    this.heroLightRays = null;
+    this.heroPattern = null;
+    this.throttledScroll = null;
+    this.heroMouseMove = null;
+    this.heroMouseLeave = null;
     this.init();
   }
 
@@ -140,18 +147,16 @@ class CharityWebsite {
     const uniqueSlidesCount = 6; // عدد الكروت الأصلية
     let current = 0;
     let timer;
-    let cardsToShow = 3;
-    const cardWidth = 320;
-    const cardMargin = 32;
-    const totalCardWidth = cardWidth + cardMargin;
+    let cardsToShow = CARDS_PER_VIEW;
+    const totalCardWidth = CARD_WIDTH + CARD_MARGIN;
     let isTransitioning = false;
 
     const updateSliderView = () => {
       if (window.innerWidth < 768) cardsToShow = 1;
       else if (window.innerWidth < 1200) cardsToShow = 2;
-      else cardsToShow = 3;
+      else cardsToShow = CARDS_PER_VIEW;
 
-      const visibleWidth = totalCardWidth * cardsToShow - cardMargin;
+      const visibleWidth = totalCardWidth * cardsToShow - CARD_MARGIN;
       slider.style.width = `${visibleWidth}px`;
       slider.style.margin = "0 auto";
       slider.style.overflow = "hidden";
@@ -249,11 +254,25 @@ class CharityWebsite {
     document.querySelectorAll(".image-hover").forEach((container) => {
       const img = container.querySelector("img");
       if (img) {
-        container.addEventListener("mouseenter", () => {
-          img.style.transform = "scale(1.1) rotate(2deg)";
+        const mouseEnterHandler = () => {
+          img.classList.add('image-hover-transform');
+        };
+        const mouseLeaveHandler = () => {
+          img.classList.remove('image-hover-transform');
+        };
+        
+        container.addEventListener("mouseenter", mouseEnterHandler);
+        container.addEventListener("mouseleave", mouseLeaveHandler);
+        
+        this.eventListeners.push({
+          element: container,
+          event: "mouseenter",
+          handler: mouseEnterHandler
         });
-        container.addEventListener("mouseleave", () => {
-          img.style.transform = "scale(1) rotate(0deg)";
+        this.eventListeners.push({
+          element: container,
+          event: "mouseleave",
+          handler: mouseLeaveHandler
         });
       }
     });
@@ -266,40 +285,48 @@ class CharityWebsite {
     const hero = document.querySelector(".hero");
     if (!hero) return;
 
+    // Cache DOM elements
+    this.heroLightRays = hero.querySelector(".hero-light-rays");
+    this.heroPattern = hero.querySelector(".hero-pattern");
+
+    // Helper function to apply transforms
+    const applyHeroTransforms = (xPos, yPos) => {
+      if (this.heroLightRays) {
+        this.heroLightRays.style.transform = `translate(${xPos}px, ${yPos}px)`;
+      }
+      if (this.heroPattern) {
+        this.heroPattern.style.transform = `translate(${-xPos * 0.5}px, ${-yPos * 0.5}px)`;
+      }
+    };
+
     // Mouse movement parallax effect
-    hero.addEventListener("mousemove", (e) => {
+    this.heroMouseMove = (e) => {
       const { clientX, clientY } = e;
       const { innerWidth, innerHeight } = window;
 
       const xPos = (clientX / innerWidth - 0.5) * 20;
       const yPos = (clientY / innerHeight - 0.5) * 20;
 
-      const lightRays = hero.querySelector(".hero-light-rays");
-      const pattern = hero.querySelector(".hero-pattern");
-
-      if (lightRays) {
-        lightRays.style.transform = `translate(${xPos}px, ${yPos}px)`;
-      }
-
-      if (pattern) {
-        pattern.style.transform = `translate(${-xPos * 0.5}px, ${
-          -yPos * 0.5
-        }px)`;
-      }
-    });
+      applyHeroTransforms(xPos, yPos);
+    };
 
     // Reset on mouse leave
-    hero.addEventListener("mouseleave", () => {
-      const lightRays = hero.querySelector(".hero-light-rays");
-      const pattern = hero.querySelector(".hero-pattern");
+    this.heroMouseLeave = () => {
+      applyHeroTransforms(0, 0);
+    };
 
-      if (lightRays) {
-        lightRays.style.transform = "translate(0px, 0px)";
-      }
+    hero.addEventListener("mousemove", this.heroMouseMove);
+    hero.addEventListener("mouseleave", this.heroMouseLeave);
 
-      if (pattern) {
-        pattern.style.transform = "translate(0px, 0px)";
-      }
+    this.eventListeners.push({
+      element: hero,
+      event: "mousemove",
+      handler: this.heroMouseMove
+    });
+    this.eventListeners.push({
+      element: hero,
+      event: "mouseleave",
+      handler: this.heroMouseLeave
     });
   }
 
@@ -323,7 +350,7 @@ class CharityWebsite {
     progressBar.className = "scroll-progress";
     document.body.appendChild(progressBar);
 
-    const throttledScroll = this.throttle(() => {
+    this.throttledScroll = this.throttle(() => {
       const scrollTop = document.documentElement.scrollTop;
       const scrollHeight =
         document.documentElement.scrollHeight -
@@ -338,7 +365,13 @@ class CharityWebsite {
       this.updateScrollRotate(scrollTop);
     }, 50);
 
-    window.addEventListener("scroll", throttledScroll);
+    window.addEventListener("scroll", this.throttledScroll);
+    
+    this.eventListeners.push({
+      element: window,
+      event: "scroll",
+      handler: this.throttledScroll
+    });
   }
 
   updateScrollRotate(scrollTop) {
@@ -425,7 +458,7 @@ class CharityWebsite {
         ripple.classList.add("ripple");
 
         this.appendChild(ripple);
-        setTimeout(() => ripple.remove(), 600);
+        setTimeout(() => ripple.remove(), RIPPLE_ANIMATION_DURATION);
       });
     });
   }
@@ -446,17 +479,21 @@ class CharityWebsite {
   destroy() {
     this.observers.forEach((observer) => observer.disconnect());
     this.timers.forEach((timer) => clearInterval(timer));
+    this.eventListeners.forEach(({ element, event, handler }) => {
+      element.removeEventListener(event, handler);
+    });
+    
     this.observers = [];
     this.timers = [];
+    this.eventListeners = [];
     this.animatedCounters.clear();
-    window.removeEventListener("scroll", this.throttledScroll);
-
-    // Clean up hero interactions
-    const hero = document.querySelector(".hero");
-    if (hero) {
-      hero.removeEventListener("mousemove", this.heroMouseMove);
-      hero.removeEventListener("mouseleave", this.heroMouseLeave);
-    }
+    
+    // Clear cached DOM references
+    this.heroLightRays = null;
+    this.heroPattern = null;
+    this.throttledScroll = null;
+    this.heroMouseMove = null;
+    this.heroMouseLeave = null;
   }
 }
 
@@ -473,10 +510,12 @@ class ParticleBackground {
     this.createParticles();
     this.animate();
 
-    window.addEventListener("resize", () => {
+    this.resizeHandler = () => {
       this.resize();
       this.repositionParticles();
-    });
+    };
+    
+    window.addEventListener("resize", this.resizeHandler);
   }
 
   resize() {
@@ -500,8 +539,10 @@ class ParticleBackground {
 
   repositionParticles() {
     this.particles.forEach((particle) => {
-      if (particle.x > this.canvas.width) particle.x = this.canvas.width;
-      if (particle.y > this.canvas.height) particle.y = this.canvas.height;
+      if (particle.x < 0) particle.x = 0;
+      if (particle.y < 0) particle.y = 0;
+      if (particle.x >= this.canvas.width) particle.x = this.canvas.width - 1;
+      if (particle.y >= this.canvas.height) particle.y = this.canvas.height - 1;
     });
   }
 
@@ -512,8 +553,8 @@ class ParticleBackground {
       particle.x += particle.vx;
       particle.y += particle.vy;
 
-      if (particle.x < 0 || particle.x > this.canvas.width) particle.vx *= -1;
-      if (particle.y < 0 || particle.y > this.canvas.height) particle.vy *= -1;
+      if (particle.x <= 0 || particle.x >= this.canvas.width) particle.vx *= -1;
+      if (particle.y <= 0 || particle.y >= this.canvas.height) particle.vy *= -1;
 
       this.ctx.beginPath();
       this.ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
@@ -528,42 +569,13 @@ class ParticleBackground {
     if (this.animationId) {
       cancelAnimationFrame(this.animationId);
     }
+    if (this.resizeHandler) {
+      window.removeEventListener("resize", this.resizeHandler);
+    }
   }
 }
 
-// CSS for ripple effect and scroll progress
-const dynamicCSS = `
-.btn {
-    position: relative;
-    overflow: hidden;
-}
-
-@keyframes ripple-animation {
-    to {
-        transform: scale(4);
-        opacity: 0;
-    }
-}
-
-.scroll-progress {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 0%;
-    height: 3px;
-    background: #c1912c;
-    z-index: 9999;
-    transition: width 0.1s ease;
-}
-
-.dot-btn.active {
-    background-color: #c1912c !important;
-}
-`;
-
-const style = document.createElement("style");
-style.textContent = dynamicCSS;
-document.head.appendChild(style);
+// CSS styles moved to style.css file
 
 // Initialize when DOM is loaded
 document.addEventListener("DOMContentLoaded", () => {
