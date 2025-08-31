@@ -9,7 +9,6 @@
       content="جمعية خيرية متخصصة في خدمة ضيوف الرحمن وتقديم الإعاشة والتموين والضيافة"
     />
 
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -17,10 +16,10 @@
       rel="stylesheet"
     />
 
-    <!-- TailwindCSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-      // Tailwind Config
+      // --- START: Full Tailwind CSS Configuration ---
+      // تم دمج جميع الأنماط من style.css هنا
       tailwind.config = {
         theme: {
           extend: {
@@ -41,72 +40,202 @@
               "fade-in-up": "fadeInUp 0.8s ease-out",
               "fade-in-right": "fadeInRight 0.8s ease-out",
               "bounce-slow": "bounce 3s infinite",
-              "pulse-slow": "pulse 3s infinite",
+              "pulse-slow": "pulseGlow 3s ease-in-out infinite",
               "spin-slow": "spin 20s linear infinite",
               "spin-reverse": "spin 25s linear infinite reverse",
+              "hero-content": "heroContentFadeIn 1.5s ease-out",
+              "pattern-move": "patternMove 60s ease-in-out infinite",
+              "light-rays-move": "lightRaysMove 50s ease-in-out infinite",
+              "slow-rotate": "slowRotate 80s linear infinite",
+              ripple: "ripple-animation 0.6s linear",
+            },
+            keyframes: {
+              fadeInUp: {
+                "0%": { opacity: "0", transform: "translateY(20px)" },
+                "100%": { opacity: "1", transform: "translateY(0)" },
+              },
+              fadeInRight: {
+                "0%": { opacity: "0", transform: "translateX(-20px)" },
+                "100%": { opacity: "1", transform: "translateX(0)" },
+              },
+              heroContentFadeIn: {
+                "0%": {
+                  opacity: "0",
+                  transform: "translateY(50px) scale(0.95)",
+                },
+                "100%": { opacity: "1", transform: "translateY(0) scale(1)" },
+              },
+              patternMove: {
+                "0%, 100%": {
+                  "background-position": "0% 0%, 100% 100%, 0% 100%",
+                },
+                "50%": {
+                  "background-position": "100% 100%, 0% 0%, 100% 0%",
+                },
+              },
+              lightRaysMove: {
+                "0%, 100%": {
+                  "background-position":
+                    "-200px -200px, 200px 200px, -100px 100px",
+                },
+                "50%": {
+                  "background-position":
+                    "200px 200px, -200px -200px, 100px -100px",
+                },
+              },
+              slowRotate: {
+                "0%": { transform: "rotate(0deg)" },
+                "100%": { transform: "rotate(360deg)" },
+              },
+              pulseGlow: {
+                "0%, 100%": {
+                  transform: "scale(1)",
+                  "box-shadow": "0 0 15px rgba(212, 168, 74, 0.4)",
+                },
+                "50%": {
+                  transform: "scale(1.1)",
+                  "box-shadow": "0 0 25px rgba(212, 168, 74, 0.6)",
+                },
+              },
+              "ripple-animation": {
+                to: {
+                  transform: "scale(4)",
+                  opacity: "0",
+                },
+              },
+            },
+            boxShadow: {
+              light:
+                "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
+              medium:
+                "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+              large: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
             },
           },
         },
       };
     </script>
 
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="assets/css/style.css" />
+    <style>
+      .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        opacity: 1;
+        transition: opacity 0.3s ease;
+      }
+      .loading-overlay.hidden {
+        opacity: 0;
+        pointer-events: none;
+      }
+      .loader {
+        width: 50px;
+        height: 50px;
+        border: 3px solid rgba(193, 145, 44, 0.2);
+        border-top: 3px solid #c1912c;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+        box-shadow: 0 0 20px rgba(193, 145, 44, 0.3);
+      }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+      /* Performance optimizations */
+      .hero {
+        transform: translateZ(0);
+        backface-visibility: hidden;
+        perspective: 1000px;
+      }
+      .hero img {
+        transform: translateZ(0);
+        backface-visibility: hidden;
+      }
+      .reveal,
+      .stagger-item {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: all 0.8s ease;
+        will-change: transform, opacity;
+      }
+      .reveal.show,
+      .stagger-item.show {
+        opacity: 1;
+        transform: translateY(0);
+        will-change: auto;
+      }
+      .btn {
+        position: relative;
+        overflow: hidden;
+        transform: translateZ(0);
+      }
+      /* Reduce motion for users who prefer it */
+      @media (prefers-reduced-motion: reduce) {
+        .animate-pattern-move,
+        .animate-light-rays-move,
+        .animate-slow-rotate {
+          animation: none !important;
+        }
+      }
+    </style>
 
-    <!-- Font Awesome for Icons -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
   </head>
-  <body class="font-arabic text-brand-ink bg-white">
-    <!-- Loading Overlay -->
+  <body class="font-arabic text-brand-ink bg-white overflow-x-hidden">
     <div class="loading-overlay">
       <div class="loader"></div>
     </div>
 
-
-
-    <!-- Header -->
     <header
       class="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm"
     >
-      <div
-        class="container mx-auto max-w-7xl px-4 flex items-center justify-between gap-4 lg:gap-8 h-20"
-      >
-        <!-- اللوجو -->
-        <a href="index.html" class="flex items-center gap-3 group">
-          <img
-            src="assets/images/IMG-20250828-WA0003.png"
-            alt="شعار الجمعية"
-            class="h-28 md:h-32 w-auto group-hover:scale-105 transition-transform"
-            loading="lazy"
-          />
-        </a>
-
-        <!-- زر القائمة للموبايل -->
-        <button
-          id="navToggle"
-          class="md:hidden inline-flex items-center justify-center w-12 h-12 rounded-lg border border-gray-200 hover:bg-gray-100 transition"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M4 6h16M4 12h16M4 18h16"
+      <div class="container mx-auto max-w-7xl px-4 h-20">
+        <div class="flex items-center justify-between h-full">
+          <a href="index.html" class="flex items-center gap-3 group">
+            <img
+              src="assets/images/IMG-20250828-WA0003.png"
+              alt="شعار الجمعية"
+              class="h-28 md:h-32 w-auto group-hover:scale-105 transition-transform"
+              loading="lazy"
             />
-          </svg>
-        </button>
+          </a>
 
-        <!-- روابط سطح المكتب -->
-        <nav class="hidden md:flex items-center gap-8 text-sm font-medium">
+          <button
+            id="navToggle"
+            class="md:hidden inline-flex items-center justify-center w-12 h-12 rounded-lg border border-gray-200 hover:bg-gray-100 transition"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 6h16M4 12h16M4 18h16"
+              />
+            </svg>
+          </button>
+        </div>
+        
+        <nav class="hidden md:flex items-center justify-center gap-8 text-sm font-medium absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
           <a
             href="#about"
             class="text-gray-700 hover:text-brand-gold transition-colors"
@@ -142,7 +271,6 @@
         </nav>
       </div>
 
-      <!-- قائمة الموبايل -->
       <div
         id="mobileMenu"
         class="md:hidden hidden border-t border-gray-200 bg-white"
@@ -181,57 +309,36 @@
       </div>
     </header>
 
-    <!-- Hero Section -->
     <section
-      class="hero relative overflow-hidden min-h-screen md:min-h-screen flex items-center"
-      style="min-height: 70vh"
+      class="hero relative overflow-hidden flex items-center justify-center text-center"
+      style="min-height: 70vh; contain: layout style paint"
     >
-      <!-- Background Image -->
       <div class="absolute inset-0 z-0">
         <img
           src="assets/images/hero-mecca.jpg"
           alt="الحرم المكي الشريف"
-          class="w-full h-full object-cover hero-bg-image"
+          class="w-full h-full object-cover"
           loading="lazy"
+          style="will-change: auto"
         />
-
-        <!-- Advanced Overlay System -->
-        <!-- Base Dark Overlay -->
         <div
-          class="absolute inset-0 bg-gradient-to-r from-brand-black/85 via-brand-black/65 to-brand-black/45"
+          class="absolute inset-0 bg-gradient-to-r from-black/85 via-black/65 to-black/45"
         ></div>
-
-        <!-- Depth Gradient -->
         <div
-          class="absolute inset-0 bg-gradient-to-t from-brand-black/80 via-transparent to-brand-black/35"
+          class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/35"
         ></div>
-
-        <!-- Golden Accent Overlay -->
         <div
-          class="absolute inset-0 bg-gradient-to-br from-brand-gold/15 via-transparent to-brand-gold/8"
+          class="absolute inset-0 bg-gradient-to-br from-yellow-600/15 via-transparent to-yellow-600/8"
         ></div>
-
-        <!-- Atmospheric Blur -->
-        <div class="absolute inset-0 bg-black/25 backdrop-blur-[1px]"></div>
-
-        <!-- Vignette Effect -->
-        <div class="absolute inset-0 hero-vignette"></div>
-
-        <!-- Subtle Pattern Overlay -->
-        <div class="absolute inset-0 hero-pattern opacity-10"></div>
-
-        <!-- Light Rays Effect -->
-        <div class="absolute inset-0 hero-light-rays opacity-20"></div>
+        <div class="absolute inset-0 bg-black/25"></div>
       </div>
 
-      <!-- Content -->
       <div class="container mx-auto max-w-7xl px-4 relative z-10">
         <div
-          class="grid lg:grid-cols-2 gap-8 items-center py-12 md:py-20"
+          class="flex flex-col items-center justify-center gap-8 py-12 md:py-20"
           style="min-height: 60vh"
         >
-          <!-- Text Content -->
-          <div class="hero-content space-y-8 text-white pr-8 lg:pr-12">
+          <div class="space-y-8 text-white max-w-3xl">
             <div class="space-y-6">
               <span
                 class="inline-block px-4 py-2 bg-brand-gold/20 backdrop-blur-sm text-brand-gold rounded-full text-sm font-semibold border border-brand-gold/30"
@@ -240,21 +347,22 @@
                 خدمة متميزة لضيوف الرحمن
               </span>
               <h1
-                class="text-5xl lg:text-6xl font-extrabold leading-relaxed mt-4 mb-6"
+                class="text-5xl lg:text-6xl font-extrabold leading-tight mt-4 mb-6"
               >
-                <span class="text-brand-gold block mb-2"
-                  >جمعية تغذية</span
+                <span class="text-brand-gold block mb-2">جمعية تغذية</span>
+                <span class="text-white text-3xl block"
+                  >ضيوف الحرمين الشريفين التعاونية</span
                 >
-                <span class="text-white text-3xl block">ضيوف الحرمين
-الشريفين التعاونية
-</span>
               </h1>
-              <p class="text-xl text-gray-200 leading-relaxed max-w-2xl mt-6">
-               نقدم حلول إعاشة وتموين عالية الجودة لضيوف الرحمن والمستفيدون في مكة المكرمة، وفق أعلى معايير السلامة والجودة.
+              <p
+                class="text-xl text-gray-200 leading-relaxed max-w-2xl mt-6 mx-auto"
+              >
+                نقدم حلول إعاشة وتموين عالية الجودة لضيوف الرحمن والمستفيدون في
+                مكة المكرمة، وفق أعلى معايير السلامة والجودة.
               </p>
             </div>
 
-            <div class="flex flex-col sm:flex-row gap-4">
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
               <a
                 href="#services"
                 class="btn bg-brand-gold text-white hover:bg-brand-light-gold text-lg px-8 py-4 rounded-xl group shadow-lg hover:shadow-xl transition-all duration-300"
@@ -275,7 +383,7 @@
               </a>
             </div>
 
-            <div class="flex items-center gap-8 pt-8">
+            <div class="flex items-center justify-center gap-8 pt-8">
               <div class="text-center">
                 <div class="text-3xl font-bold text-brand-gold">15k+</div>
                 <div class="text-sm text-gray-300">وجبة مقدمة</div>
@@ -291,8 +399,7 @@
             </div>
           </div>
 
-          <!-- Floating Card -->
-          <div class="hero-card lg:flex justify-center hidden">
+          <div class="hero-card hidden lg:flex justify-center">
             <div
               class="bg-white/10 backdrop-blur-md rounded-2xl p-8 shadow-2xl border border-white/20 max-w-md hover:bg-white/15 transition-all duration-300"
             >
@@ -304,7 +411,7 @@
                 </div>
                 <div>
                   <div class="font-bold text-white text-lg">
-                    خدمة ضيوف الرحمن
+                    خدمة ضيوف الحرمين
                   </div>
                   <div class="text-sm text-gray-300">بأعلى معايير الجودة</div>
                 </div>
@@ -328,7 +435,6 @@
       </div>
     </section>
 
-    <!-- About Preview Section -->
     <section id="about" class="py-20 bg-white relative" dir="rtl">
       <div class="container mx-auto max-w-7xl px-6 lg:px-8">
         <div class="grid lg:grid-cols-2 gap-16 items-center">
@@ -399,7 +505,7 @@
                 </div>
                 <div class="flex-1">
                   <h4 class="font-semibold text-brand-ink mb-2 text-lg">
-                    شراكات محلية 
+                    شراكات محلية
                   </h4>
                   <p class="text-brand-gray leading-relaxed">
                     نبني جسور التعاون لتعظيم الأثر
@@ -435,7 +541,6 @@
                 ></div>
               </div>
 
-              <!-- Stats Overlay -->
               <div
                 class="absolute -bottom-8 -right-8 bg-white rounded-2xl p-6 shadow-xl border border-gray-100"
               >
@@ -457,427 +562,366 @@
       </div>
     </section>
 
-    <!-- Stats Section -->
-    <section id="stats" class="relative py-16 overflow-hidden">
-      <!-- Pattern Background -->
-      <!-- <div class="absolute -top-48 -right-48 w-[1200px] h-[900px] z-0">
-        <img
-          src="assets/images/باترن-دائري.png"
-          alt="Pattern Background"
-          class="w-full h-full object-contain opacity-5 scroll-rotate"
-          style="transform: rotateZ(-32deg)"
-        />
-      </div> -->
+    <div
+      class="relative bg-repeat bg-center bg-fixed"
+      style="
+        background-image: url('assets/images/IMG-20250831-WA0000.jpg');
+        background-size: 300px;
+      "
+    >
       <div
-        class="absolute inset-0 bg-gradient-to-br from-gray-50/98 via-white/95 to-gray-100/98 z-5"
+        class="absolute inset-0 bg-gradient-to-tl from-gray-50/60 via-white/50 to-gray-100/60"
       ></div>
-      <div class="max-w-6xl mx-auto px-6 text-center relative z-10">
-        <!-- العنوان -->
-        <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
-          الأرقام والإحصائيات
-        </h2>
-        <div class="w-24 h-1 bg-brand-gold mx-auto mb-12"></div>
-
-        <!-- الإحصائيات في صف واحد -->
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-          <!-- أسطول المركبات -->
-           <div class="flex flex-col items-center p-6">
-            <div class="icon-wrapper mb-4">
-              <img
-                src="assets/images/cargo-truck.png"
-                alt="أسطول المركبات"
-                class="max-w-full h-auto"
-                loading="lazy"
-              />
+      <section id="stats" class="relative py-16 overflow-hidden">
+        <div class="max-w-6xl mx-auto px-6 text-center relative z-10">
+          <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+            الأرقام والإحصائيات
+          </h2>
+          <div class="w-24 h-1 bg-brand-gold mx-auto mb-12"></div>
+          <div
+            class="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-6 gap-6"
+          >
+            <div class="flex flex-col items-center p-6">
+              <div
+                class="w-16 h-16 bg-brand-gold rounded-full flex items-center justify-center mb-6 transition-all duration-300"
+              >
+                <img
+                  src="assets/images/cargo-truck.png"
+                  alt="أسطول المركبات"
+                  class="max-w-full h-auto"
+                  loading="lazy"
+                />
+              </div>
+              <h3
+                class="text-3xl font-bold text-brand-gold mb-2 counter"
+                data-target="15"
+              >
+                0
+              </h3>
+              <p class="text-gray-700 text-lg">أسطول المركبات</p>
             </div>
-            <h3
-              class="text-3xl font-bold text-brand-gold mb-2 counter"
-              data-target="15"
-            >
-              0
-            </h3>
-            <p class="text-gray-700 text-lg">أسطول المركبات</p>
-          </div> 
 
-          <!-- وزن الفائض -->
-          <div class="flex flex-col items-center p-6">
-            <div class="icon-wrapper mb-4">
-              <img
-                src="assets/images/kg.png"
-                alt="وزن الفائض"
-                class="max-w-full h-auto"
-                loading="lazy"
-              />
+            <div class="flex flex-col items-center p-6">
+              <div
+                class="w-16 h-16 bg-brand-gold rounded-full flex items-center justify-center mb-6 overflow-visible"
+              >
+                <img
+                  src="assets/images/kg.png"
+                  alt="وزن الفائض"
+                  class="w-20 h-20"
+                  loading="lazy"
+                />
+              </div>
+              <h3
+                class="text-3xl font-bold text-brand-gold mb-2 counter"
+                data-target="850"
+              >
+                0
+              </h3>
+              <p class="text-gray-700 text-lg">وزن الفائض (بالطن)</p>
             </div>
-            <h3
-              class="text-3xl font-bold text-brand-gold mb-2 counter"
-              data-target="850"
-            >
-              0
-            </h3>
-            <p class="text-gray-700 text-lg">وزن الفائض (بالطن)</p>
-          </div> 
 
-          <!-- الوجبات -->
-           <div class="flex flex-col items-center p-6">
-            <div class="icon-wrapper mb-4">
-              <img
-                src="assets/images/food-donation-1.png"
-                alt="الوجبات "
-                class="max-w-full h-auto"
-                loading="lazy"
-              />
+            <div class="flex flex-col items-center p-6">
+              <div
+                class="w-16 h-16 bg-brand-gold rounded-full flex items-center justify-center mb-6 transition-all duration-300"
+              >
+                <img
+                  src="assets/images/food-donation-1.png"
+                  alt="الوجبات"
+                  class="max-w-full h-auto"
+                  loading="lazy"
+                />
+              </div>
+              <h3
+                class="text-3xl font-bold text-brand-gold mb-2 counter"
+                data-target="25000"
+              >
+                0
+              </h3>
+              <p class="text-gray-700 text-lg">وجبات</p>
             </div>
-            <h3
-              class="text-3xl font-bold text-brand-gold mb-2 counter"
-              data-target="25000"
+
+            <div class="flex flex-col items-center p-6">
+              <div
+                class="w-16 h-16 bg-brand-gold rounded-full flex items-center justify-center mb-6 transition-all duration-300"
+              >
+                <img
+                  src="assets/images/people_3369137.png"
+                  alt="المستفيدون"
+                  class="max-w-full h-auto"
+                  loading="lazy"
+                />
+              </div>
+              <h3
+                class="text-3xl font-bold text-brand-gold mb-2 counter"
+                data-target="8500"
+              >
+                0
+              </h3>
+              <p class="text-gray-700 text-lg">المستفيدون</p>
+            </div>
+
+            <div class="flex flex-col items-center p-6">
+              <div
+                class="w-16 h-16 bg-brand-gold rounded-full flex items-center justify-center mb-6 transition-all duration-300"
+              >
+                <img
+                  src="assets/images/distance.png"
+                  alt="الرحلات الميدانية"
+                  class="max-w-full h-auto"
+                  loading="lazy"
+                />
+              </div>
+              <h3
+                class="text-3xl font-bold text-brand-gold mb-2 counter"
+                data-target="450"
+              >
+                0
+              </h3>
+              <p class="text-gray-700 text-lg">الرحلات الميدانية</p>
+            </div>
+
+            <div class="flex flex-col items-center p-6">
+              <div
+                class="w-16 h-16 bg-brand-gold rounded-full flex items-center justify-center mb-6 transition-all duration-300"
+              >
+                <img
+                  src="assets/images/support.png"
+                  alt="المتطوعون"
+                  class="max-w-full h-auto"
+                  loading="lazy"
+                />
+              </div>
+              <h3
+                class="text-3xl font-bold text-brand-gold mb-2 counter"
+                data-target="120"
+              >
+                0
+              </h3>
+              <p class="text-gray-700 text-lg">المتطوعون</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="services" class="py-20 bg-white">
+        <div class="container mx-auto max-w-7xl px-4">
+          <div class="reveal text-center mb-16">
+            <span
+              class="inline-block text-4xl font-semibold tracking-wider text-brand-gold uppercase mb-4"
             >
-              0
-            </h3>
-            <p class="text-gray-700 text-lg">
-              وجبات 
+              <i class="fas fa-cogs ml-2"></i>
+              خدماتنا
+            </span>
+            <p class="text-xl text-brand-gray max-w-3xl mx-auto">
+              مجموعة من المبادرات الهادفة لتحقيق أثر ملموس في المجتمع وخدمة ضيوف
+              الرحمن
             </p>
           </div>
 
-          <!-- المستفيدون -->
-          <div class="flex flex-col items-center p-6">
-            <div class="icon-wrapper mb-4">
-              <img
-                src="assets/images/people_3369137.png"
-                alt="المستفيدون"
-                class="max-w-full h-auto"
-                loading="lazy"
-              />
-            </div>
-            <h3
-              class="text-3xl font-bold text-brand-gold mb-2 counter"
-              data-target="8500"
+          <div class="stagger-container space-y-8">
+            <div
+              class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8"
             >
-              0
-            </h3>
-            <p class="text-gray-700 text-lg">المستفيدون</p>
-          </div>
+              <div class="stagger-item">
+                <div
+                  class="relative rounded-2xl bg-white shadow-lg group hover:shadow-xl transition-all duration-300 flex flex-col h-full"
+                >
+                  <div class="relative h-48 rounded-t-2xl">
+                    <img
+                      src="assets/images/event-1-e1702499071830.jpg"
+                      alt="الإعاشة والتموين"
+                      class="w-full h-full object-cover rounded-t-2xl"
+                      loading="lazy"
+                    />
+                    <span
+                      class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 w-16 h-16 bg-brand-gold rounded-full flex items-center justify-center shadow-lg z-20"
+                    >
+                      <i class="fas fa-utensils text-white text-2xl"></i>
+                    </span>
+                  </div>
+                  <div class="pt-12 px-6 pb-6 text-center">
+                    <h4
+                      class="text-xl font-bold mb-3 text-brand-ink group-hover:text-brand-gold transition-colors"
+                    >
+                      <span>الإعاشة والتموين</span>
+                    </h4>
+                    <div class="text-gray-600 leading-relaxed">
+                      إعداد وتقديم وجبات آمنة ومتوازنة وفق مواصفات سلامة الغذاء
+                      ومعايير الجودة العالمية.
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="stagger-item">
+                <div
+                  class="relative rounded-2xl bg-white shadow-lg group hover:shadow-xl transition-all duration-300 flex flex-col h-full"
+                >
+                  <div class="relative h-48 rounded-t-2xl">
+                    <img
+                      src="assets/images/pexels-bayu-prakosa-243773629-33666860.webp"
+                      alt="الخدمات اللوجستية"
+                      class="w-full h-full object-cover rounded-t-2xl"
+                      loading="lazy"
+                    />
+                    <span
+                      class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 w-16 h-16 bg-brand-gold rounded-full flex items-center justify-center shadow-lg z-20"
+                    >
+                      <i class="fas fa-truck text-white text-2xl"></i>
+                    </span>
+                  </div>
+                  <div class="pt-12 px-6 pb-6 text-center">
+                    <h4
+                      class="text-xl font-bold mb-3 text-brand-ink group-hover:text-brand-gold transition-colors"
+                    >
+                      <span>الخدمات اللوجستية</span>
+                    </h4>
+                    <div class="text-gray-600 leading-relaxed">
+                      سلاسل إمداد فعالة لضمان التوفير في الوقت والمكان المناسب
+                      بأعلى معايير الكفاءة.
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="stagger-item">
+                <div
+                  class="relative rounded-2xl bg-white shadow-lg group hover:shadow-xl transition-all duration-300 flex flex-col h-full"
+                >
+                  <div class="relative h-48 rounded-t-2xl">
+                    <img
+                      src="assets/images/mina-tent-city-10[6].jpg"
+                      alt="الضيافة والفندقة"
+                      class="w-full h-full object-cover rounded-t-2xl"
+                      loading="lazy"
+                    />
+                    <span
+                      class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 w-16 h-16 bg-brand-gold rounded-full flex items-center justify-center shadow-lg z-20"
+                    >
+                      <i class="fas fa-hotel text-white text-2xl"></i>
+                    </span>
+                  </div>
+                  <div class="pt-12 px-6 pb-6 text-center">
+                    <h4
+                      class="text-xl font-bold mb-3 text-brand-ink group-hover:text-brand-gold transition-colors"
+                    >
+                      <span>الضيافة والفندقة</span>
+                    </h4>
+                    <div class="text-gray-600 leading-relaxed">
+                      تشغيل الضيافة وفق أرقى معايير الراحة والنظافة لضيوف الرحمن
+                      في رحلتهم المقدسة.
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="stagger-item">
+                <div
+                  class="relative rounded-2xl bg-white shadow-lg group hover:shadow-xl transition-all duration-300 flex flex-col h-full"
+                >
+                  <div class="relative h-48 rounded-t-2xl">
+                    <img
+                      src="assets/images/121421_527.jpg"
+                      alt="خدمات الحج"
+                      class="w-full h-full object-cover rounded-t-2xl"
+                      loading="lazy"
+                    />
+                    <span
+                      class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 w-16 h-16 bg-brand-gold rounded-full flex items-center justify-center shadow-lg z-20"
+                    >
+                      <i class="fas fa-kaaba text-white text-2xl"></i>
+                    </span>
+                  </div>
+                  <div class="pt-12 px-6 pb-6 text-center">
+                    <h4
+                      class="text-xl font-bold mb-3 text-brand-ink group-hover:text-brand-gold transition-colors"
+                    >
+                      <span>خدمات الحج</span>
+                    </h4>
+                    <div class="text-gray-600 leading-relaxed">
+                      برامج متكاملة لإعاشة الحجاج وإدارة مواقع المشاعر المقدسة
+                      بكفاءة عالية.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
 
-          <!-- الرحلات الميدانية -->
-           <div class="flex flex-col items-center p-6">
-            <div class="icon-wrapper mb-4">
-              <img
-                src="assets/images/distance.png"
-                alt="الرحلات الميدانية"
-                class="max-w-full h-auto"
-                loading="lazy"
-              />
-            </div>
-            <h3
-              class="text-3xl font-bold text-brand-gold mb-2 counter"
-              data-target="450"
+            <div
+              class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8"
             >
-              0
-            </h3>
-            <p class="text-gray-700 text-lg">الرحلات الميدانية</p>
-          </div> 
-
-          <!-- المتطوعون -->
-          <div class="flex flex-col items-center p-6">
-            <div class="icon-wrapper mb-4">
-              <img
-                src="assets/images/support.png"
-                alt="المتطوعون"
-                class="max-w-full h-auto"
-                loading="lazy"
-              />
+              <div class="hidden lg:block"></div>
+              <div class="stagger-item">
+                <div
+                  class="relative rounded-2xl bg-white shadow-lg group hover:shadow-xl transition-all duration-300 flex flex-col h-full"
+                >
+                  <div class="relative h-48 rounded-t-2xl">
+                    <img
+                      src="assets/images/pexels-jepret-hikmah-9515285-6099933.jpg"
+                      alt="خدمات العمرة"
+                      class="w-full h-full object-cover rounded-t-2xl"
+                      loading="lazy"
+                    />
+                    <span
+                      class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 w-16 h-16 bg-brand-gold rounded-full flex items-center justify-center shadow-lg z-20"
+                    >
+                      <i class="fas fa-moon text-white text-2xl"></i>
+                    </span>
+                  </div>
+                  <div class="pt-12 px-6 pb-6 text-center">
+                    <h4
+                      class="text-xl font-bold mb-3 text-brand-ink group-hover:text-brand-gold transition-colors"
+                    >
+                      <span>خدمات العمرة</span>
+                    </h4>
+                    <div class="text-gray-600 leading-relaxed">
+                      تسهيل رحلة المعتمرين بخدمات شاملة تضمن راحتهم وسلامتهم
+                      طوال فترة العمرة.
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="stagger-item">
+                <div
+                  class="relative rounded-2xl bg-white shadow-lg group hover:shadow-xl transition-all duration-300 flex flex-col h-full"
+                >
+                  <div class="relative h-48 rounded-t-2xl">
+                    <img
+                      src="assets/images/mecca-saudi-arabia-aug-2023-the-cleaning-staff-is-busy-cleaning-the-courtyard-of-masjid-al-haram-in-mecca-free-photo.jpg"
+                      alt="الخدمات المجتمعية"
+                      class="w-full h-full object-cover rounded-t-2xl"
+                      loading="lazy"
+                    />
+                    <span
+                      class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 w-16 h-16 bg-brand-gold rounded-full flex items-center justify-center shadow-lg z-20"
+                    >
+                      <i class="fas fa-hands-helping text-white text-2xl"></i>
+                    </span>
+                  </div>
+                  <div class="pt-12 px-6 pb-6 text-center">
+                    <h4
+                      class="text-xl font-bold mb-3 text-brand-ink group-hover:text-brand-gold transition-colors"
+                    >
+                      <span>الخدمات المجتمعية</span>
+                    </h4>
+                    <div class="text-gray-600 leading-relaxed">
+                      برامج تنموية وخيرية هادفة لخدمة المجتمع وتحقيق التنمية
+                      المستدامة.
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="hidden lg:block"></div>
             </div>
-            <h3
-              class="text-3xl font-bold text-brand-gold mb-2 counter"
-              data-target="120"
-            >
-              0
-            </h3>
-            <p class="text-gray-700 text-lg">المتطوعون</p>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
 
-    <!-- Services Section -->
-    <section id="services" class="relative py-20 overflow-hidden">
-      <!-- Pattern Background -->
-      <div class="absolute -top-40 -right-40 w-[900px] h-[900px] z-0">
-        <!-- <img
-          src="assets/images/باترن-دائري.png"
-          alt="Pattern Background"
-          class="w-full h-full object-contain opacity-6 scroll-rotate-slow"
-          style="transform: rotateZ(60deg)"
-        /> -->
-      </div>
-      <div
-        class="absolute inset-0 bg-gradient-to-tl from-gray-50/95 via-white/90 to-gray-100/95 z-5"
-      ></div>
-      <div class="container mx-auto max-w-7xl px-4 relative z-10">
-        <div class="reveal text-center mb-16">
-          <span
-            class="inline-block text-4xl font-semibold tracking-wider text-brand-gold uppercase mb-4"
-          >
-            <i class="fas fa-cogs ml-2"></i>
-            خدماتنا
-          </span>
-          <!-- <h2 class="text-4xl font-extrabold text-brand-ink mb-6">
-            برامج الجمعية
-          </h2> -->
-          <p class="text-xl text-brand-gray max-w-3xl mx-auto">
-            مجموعة من المبادرات الهادفة لتحقيق أثر ملموس في المجتمع وخدمة ضيوف
-            الرحمن
-          </p>
-        </div>
-
-        <div class="stagger-container space-y-8">
-          <!-- الصف الأول: 4 كروت -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-          <!-- الإعاشة والتموين -->
-          <div class="service-one__single stagger-item">
-            <div
-              class="service-one__content relative rounded-2xl bg-white shadow-lg group hover:shadow-xl transition-all duration-300 flex flex-col h-full"
-            >
-              <div class="service-one__image relative h-48 rounded-t-2xl">
-                <img
-                  src="assets/images/event-1-e1702499071830.jpg"
-                  alt="الإعاشة والتموين"
-                  class="w-full h-full object-cover rounded-t-2xl"
-                  loading="lazy"
-                />
-                <span
-                  class="service-one__icon absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 w-16 h-16 bg-brand-gold rounded-full flex items-center justify-center shadow-lg z-20"
-                >
-                  <i class="fas fa-utensils text-white text-2xl"></i>
-                </span>
-              </div>
-              <div
-                class="service-one__content-inner pt-12 px-6 pb-6 text-center"
-              >
-                <h4
-                  class="service-one__title text-xl font-bold mb-3 text-brand-ink group-hover:text-brand-gold transition-colors"
-                >
-                  <span>الإعاشة والتموين</span>
-                </h4>
-                <div class="service-one__desc text-gray-600 leading-relaxed">
-                  إعداد وتقديم وجبات آمنة ومتوازنة وفق مواصفات سلامة الغذاء
-                  ومعايير الجودة العالمية.
-                </div>
-              </div>
-              <a
-                href="#"
-                class="service-one__link-overlay absolute inset-0 z-10"
-              ></a>
-            </div>
-          </div>
-
-          <!-- الخدمات اللوجستية -->
-          <div class="service-one__single stagger-item">
-            <div
-              class="service-one__content relative rounded-2xl bg-white shadow-lg group hover:shadow-xl transition-all duration-300 flex flex-col h-full"
-            >
-              <div class="service-one__image relative h-48 rounded-t-2xl">
-                <img
-                  src="assets/images/pexels-bayu-prakosa-243773629-33666860.webp"
-                  alt="الخدمات اللوجستية"
-                  class="w-full h-full object-cover rounded-t-2xl"
-                  loading="lazy"
-                />
-                <span
-                  class="service-one__icon absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 w-16 h-16 bg-brand-gold rounded-full flex items-center justify-center shadow-lg z-20"
-                >
-                  <i class="fas fa-truck text-white text-2xl"></i>
-                </span>
-              </div>
-              <div
-                class="service-one__content-inner pt-12 px-6 pb-6 text-center"
-              >
-                <h4
-                  class="service-one__title text-xl font-bold mb-3 text-brand-ink group-hover:text-brand-gold transition-colors"
-                >
-                  <span>الخدمات اللوجستية</span>
-                </h4>
-                <div class="service-one__desc text-gray-600 leading-relaxed">
-                  سلاسل إمداد فعالة لضمان التوفير في الوقت والمكان المناسب بأعلى
-                  معايير الكفاءة.
-                </div>
-              </div>
-              <a
-                href="#"
-                class="service-one__link-overlay absolute inset-0 z-10"
-              ></a>
-            </div>
-          </div>
-
-          <!-- الضيافة والفندقة -->
-          <div class="service-one__single stagger-item">
-            <div
-              class="service-one__content relative rounded-2xl bg-white shadow-lg group hover:shadow-xl transition-all duration-300 flex flex-col h-full"
-            >
-              <div class="service-one__image relative h-48 rounded-t-2xl">
-                <img
-                  src="assets/images/mina-tent-city-10[6].jpg"
-                  alt="الضيافة والفندقة"
-                  class="w-full h-full object-cover rounded-t-2xl"
-                  loading="lazy"
-                />
-                <span
-                  class="service-one__icon absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 w-16 h-16 bg-brand-gold rounded-full flex items-center justify-center shadow-lg z-20"
-                >
-                  <i class="fas fa-hotel text-white text-2xl"></i>
-                </span>
-              </div>
-              <div
-                class="service-one__content-inner pt-12 px-6 pb-6 text-center"
-              >
-                <h4
-                  class="service-one__title text-xl font-bold mb-3 text-brand-ink group-hover:text-brand-gold transition-colors"
-                >
-                  <span>الضيافة والفندقة</span>
-                </h4>
-                <div class="service-one__desc text-gray-600 leading-relaxed">
-                  تشغيل الضيافة وفق أرقى معايير الراحة والنظافة لضيوف الرحمن في
-                  رحلتهم المقدسة.
-                </div>
-              </div>
-              <a
-                href="#"
-                class="service-one__link-overlay absolute inset-0 z-10"
-              ></a>
-            </div>
-          </div>
-
-          <!-- خدمات الحج -->
-          <div class="service-one__single stagger-item">
-            <div
-              class="service-one__content relative rounded-2xl bg-white shadow-lg group hover:shadow-xl transition-all duration-300 flex flex-col h-full"
-            >
-              <div class="service-one__image relative h-48 rounded-t-2xl">
-                <img
-                  src="assets/images/121421_527.jpg"
-                  alt="خدمات الحج"
-                  class="w-full h-full object-cover rounded-t-2xl"
-                  loading="lazy"
-                />
-                <span
-                  class="service-one__icon absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 w-16 h-16 bg-brand-gold rounded-full flex items-center justify-center shadow-lg z-20"
-                >
-                  <i class="fas fa-kaaba text-white text-2xl"></i>
-                </span>
-              </div>
-              <div
-                class="service-one__content-inner pt-12 px-6 pb-6 text-center"
-              >
-                <h4
-                  class="service-one__title text-xl font-bold mb-3 text-brand-ink group-hover:text-brand-gold transition-colors"
-                >
-                  <span>خدمات الحج</span>
-                </h4>
-                <div class="service-one__desc text-gray-600 leading-relaxed">
-                  برامج متكاملة لإعاشة الحجاج وإدارة مواقع المشاعر المقدسة
-                  بكفاءة عالية.
-                </div>
-              </div>
-              <a
-                href="#"
-                class="service-one__link-overlay absolute inset-0 z-10"
-              ></a>
-            </div>
-          </div>
-          </div>
-          
-          <!-- الصف الثاني: 2 كرت في الوسط -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-          <div class="hidden lg:block"></div>
-          <!-- خدمات العمرة -->
-          <div class="service-one__single stagger-item">
-            <div
-              class="service-one__content relative rounded-2xl bg-white shadow-lg group hover:shadow-xl transition-all duration-300 flex flex-col h-full"
-            >
-              <div class="service-one__image relative h-48 rounded-t-2xl">
-                <img
-                  src="assets/images/pexels-jepret-hikmah-9515285-6099933.jpg"
-                  alt="خدمات العمرة"
-                  class="w-full h-full object-cover rounded-t-2xl"
-                  loading="lazy"
-                />
-                <span
-                  class="service-one__icon absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 w-16 h-16 bg-brand-gold rounded-full flex items-center justify-center shadow-lg z-20"
-                >
-                  <i class="fas fa-moon text-white text-2xl"></i>
-                </span>
-              </div>
-              <div
-                class="service-one__content-inner pt-12 px-6 pb-6 text-center"
-              >
-                <h4
-                  class="service-one__title text-xl font-bold mb-3 text-brand-ink group-hover:text-brand-gold transition-colors"
-                >
-                  <span>خدمات العمرة</span>
-                </h4>
-                <div class="service-one__desc text-gray-600 leading-relaxed">
-                  تسهيل رحلة المعتمرين بخدمات شاملة تضمن راحتهم وسلامتهم طوال
-                  فترة العمرة.
-                </div>
-              </div>
-              <a
-                href="#"
-                class="service-one__link-overlay absolute inset-0 z-10"
-              ></a>
-            </div>
-          </div>
-
-          <!-- الخدمات المجتمعية -->
-          <div class="service-one__single stagger-item">
-            <div
-              class="service-one__content relative rounded-2xl bg-white shadow-lg group hover:shadow-xl transition-all duration-300 flex flex-col h-full"
-            >
-              <div class="service-one__image relative h-48 rounded-t-2xl">
-                <img
-                  src="assets/images/mecca-saudi-arabia-aug-2023-the-cleaning-staff-is-busy-cleaning-the-courtyard-of-masjid-al-haram-in-mecca-free-photo.jpg"
-                  alt="الخدمات المجتمعية"
-                  class="w-full h-full object-cover rounded-t-2xl"
-                  loading="lazy"
-                />
-                <span
-                  class="service-one__icon absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 w-16 h-16 bg-brand-gold rounded-full flex items-center justify-center shadow-lg z-20"
-                >
-                  <i class="fas fa-hands-helping text-white text-2xl"></i>
-                </span>
-              </div>
-              <div
-                class="service-one__content-inner pt-12 px-6 pb-6 text-center"
-              >
-                <h4
-                  class="service-one__title text-xl font-bold mb-3 text-brand-ink group-hover:text-brand-gold transition-colors"
-                >
-                  <span>الخدمات المجتمعية</span>
-                </h4>
-                <div class="service-one__desc text-gray-600 leading-relaxed">
-                  برامج تنموية وخيرية هادفة لخدمة المجتمع وتحقيق التنمية
-                  المستدامة.
-                </div>
-              </div>
-              <a
-                href="#"
-                class="service-one__link-overlay absolute inset-0 z-10"
-              ></a>
-            </div>
-          </div>
-          <div class="hidden lg:block"></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- شركاؤنا -->
     <section id="partners" class="py-20 bg-white relative overflow-hidden">
-      <!-- Pattern Background -->
       <div class="absolute inset-0 z-0">
         <img
           src="assets/images/patter.png"
           alt="Pattern Background"
-          class="w-full h-full object-cover opacity-100 partners-bg-scroll"
+          class="w-full h-full object-cover opacity-100"
           loading="lazy"
         />
         <div class="absolute inset-0 bg-brand-gold/2"></div>
@@ -890,21 +934,17 @@
             <i class="fas fa-handshake text-4xl ml-3"></i>
             شركاؤنا
           </span>
-          <!-- <h2 class="text-2xl font-extrabold text-brand-ink mb-6">
-            نفخر بشركائنا
-          </h2> -->
           <p class="text-xl text-brand-gray max-w-3xl mx-auto">
             نعمل مع شركاء استراتيجيين لتقديم أفضل الخدمات لضيوف الرحمن
           </p>
         </div>
 
-        <!-- كروت بأيقونات أوضح -->
         <div
           class="stagger-container grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8"
         >
           <div class="stagger-item">
             <div
-              class="card h-40 flex flex-col items-center justify-center bg-gray-50 shadow-md rounded-2xl hover:shadow-lg hover:bg-brand-gold/5 transition-all group"
+              class="h-40 flex flex-col items-center justify-center bg-gray-50 shadow-md rounded-2xl hover:shadow-lg hover:bg-brand-gold/5 transition-all group"
             >
               <div
                 class="w-20 h-20 bg-brand-gold/20 rounded-full flex items-center justify-center group-hover:bg-brand-gold/30 transition-colors mb-3"
@@ -914,10 +954,9 @@
               <span class="font-semibold text-brand-ink">شريك أعمال</span>
             </div>
           </div>
-
           <div class="stagger-item">
             <div
-              class="card h-40 flex flex-col items-center justify-center bg-gray-50 shadow-md rounded-2xl hover:shadow-lg hover:bg-brand-gold/5 transition-all group"
+              class="h-40 flex flex-col items-center justify-center bg-gray-50 shadow-md rounded-2xl hover:shadow-lg hover:bg-brand-gold/5 transition-all group"
             >
               <div
                 class="w-20 h-20 bg-brand-gold/20 rounded-full flex items-center justify-center group-hover:bg-brand-gold/30 transition-colors mb-3"
@@ -927,10 +966,9 @@
               <span class="font-semibold text-brand-ink">شريك صناعي</span>
             </div>
           </div>
-
           <div class="stagger-item">
             <div
-              class="card h-40 flex flex-col items-center justify-center bg-gray-50 shadow-md rounded-2xl hover:shadow-lg hover:bg-brand-gold/5 transition-all group"
+              class="h-40 flex flex-col items-center justify-center bg-gray-50 shadow-md rounded-2xl hover:shadow-lg hover:bg-brand-gold/5 transition-all group"
             >
               <div
                 class="w-20 h-20 bg-brand-gold/20 rounded-full flex items-center justify-center group-hover:bg-brand-gold/30 transition-colors mb-3"
@@ -940,27 +978,27 @@
               <span class="font-semibold text-brand-ink">متاجر</span>
             </div>
           </div>
-
           <div class="stagger-item">
             <div
-              class="card h-40 flex flex-col items-center justify-center bg-gray-50 shadow-md rounded-2xl hover:shadow-lg hover:bg-brand-gold/5 transition-all group"
+              class="h-40 flex flex-col items-center justify-center bg-gray-50 shadow-md rounded-2xl hover:shadow-lg hover:bg-brand-gold/5 transition-all group"
             >
               <div
                 class="w-20 h-20 bg-brand-gold/20 rounded-full flex items-center justify-center group-hover:bg-brand-gold/30 transition-colors mb-3"
               >
                 <i class="fas fa-globe text-brand-gold text-3xl"></i>
               </div>
-              <span class="font-semibold text-brand-ink">شركاء محليون </span>
+              <span class="font-semibold text-brand-ink">شركاء محليون</span>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Contact Section -->
     <section id="contact" class="py-20 bg-gradient-to-br from-gray-50 to-white">
       <div class="container mx-auto max-w-7xl px-4">
-        <div class="reveal card max-w-4xl mx-auto p-8">
+        <div
+          class="reveal max-w-4xl mx-auto p-8 bg-white rounded-2xl shadow-lg"
+        >
           <div class="grid lg:grid-cols-3 gap-12 items-center">
             <div class="lg:col-span-2 space-y-6">
               <div>
@@ -974,7 +1012,7 @@
 
               <div class="grid sm:grid-cols-2 gap-4">
                 <a
-                  href="mailto:info@charity.sa"
+                  href="mailto:ekram@ekram.org.sa"
                   class="flex items-center gap-3 p-4 bg-gray-50 rounded-lg hover:bg-brand-gold/5 transition-colors group"
                 >
                   <div
@@ -986,12 +1024,13 @@
                     <div class="font-semibold text-brand-ink">
                       البريد الإلكتروني
                     </div>
-                    <div class="text-sm text-brand-gray">ekram@ekram.org.sa</div>
+                    <div class="text-sm text-brand-gray">
+                      ekram@ekram.org.sa
+                    </div>
                   </div>
                 </a>
-
                 <a
-                  href="tel:+966536060603"
+                  href="tel:0536060603"
                   class="flex items-center gap-3 p-4 bg-gray-50 rounded-lg hover:bg-brand-gold/5 transition-colors group"
                 >
                   <div
@@ -1001,12 +1040,9 @@
                   </div>
                   <div>
                     <div class="font-semibold text-brand-ink">الهاتف</div>
-                    <div class="text-sm text-brand-gray">
-                      0536060603
-                    </div>
+                    <div class="text-sm text-brand-gray">0536060603</div>
                   </div>
                 </a>
-
                 <a
                   href="#"
                   class="flex items-center gap-3 p-4 bg-gray-50 rounded-lg hover:bg-brand-gold/5 transition-colors group"
@@ -1021,7 +1057,6 @@
                     <div class="text-sm text-brand-gray">@charity_sa</div>
                   </div>
                 </a>
-
                 <a
                   href="#"
                   class="flex items-center gap-3 p-4 bg-gray-50 rounded-lg hover:bg-brand-gold/5 transition-colors group"
@@ -1049,7 +1084,10 @@
                 اتصل بنا الآن
               </h4>
               <p class="text-brand-gray mb-4">نحن متاحون على مدار الساعة</p>
-              <a href="tel:0536060603" class="bg-brand-gold/20 text-brand-ink px-6 py-3 rounded-lg font-semibold hover:bg-brand-gold/40 hover:text-brand-ink transition-all duration-300 inline-flex items-center gap-2">
+              <a
+                href="tel:0536060603"
+                class="bg-brand-gold/20 text-brand-ink px-6 py-3 rounded-lg font-semibold hover:bg-brand-gold/40 hover:text-brand-ink transition-all duration-300 inline-flex items-center gap-2"
+              >
                 <i class="fas fa-phone"></i>
                 اتصل الآن
               </a>
@@ -1059,130 +1097,116 @@
       </div>
     </section>
 
-    <!-- Footer -->
     <footer class="bg-brand-ink text-white py-12 relative overflow-hidden">
-      <!-- Pattern Background -->
       <div class="absolute inset-0 z-0">
         <img
           src="assets/images/patter.png"
           alt="Pattern Background"
-          class="w-full h-full object-cover opacity-15 footer-bg-scroll"
+          class="w-full h-full object-cover opacity-15 animate-slow-rotate"
           loading="lazy"
         />
-        <div class="absolute inset-0 "></div>
+        <div class="absolute inset-0"></div>
       </div>
       <div class="container mx-auto max-w-7xl px-4 relative z-10">
         <div class="grid md:grid-cols-4 gap-8 mb-8">
           <div class="space-y-4">
             <div class="flex items-center gap-3">
               <img
-                src="assets/images/IMG-20250828-WA0003.png"
+                src="assets/images/logo0.png"
                 alt="شعار الجمعية"
-                class="h-32 w-auto bg-white"
+                class="h-32 w-auto"
                 loading="lazy"
               />
             </div>
-            <p class="text-gray-300 text-sm leading-relaxed">
+            <p class="text-white text-sm leading-relaxed">
               نخدم ضيوف الرحمن بأعلى معايير الجودة والكفاءة في الإعاشة والتموين
               والضيافة.
             </p>
           </div>
-
           <div>
             <h4 class="font-bold text-brand-gold mb-4">روابط سريعة</h4>
             <ul class="space-y-2 text-sm">
               <li>
                 <a
                   href="#about"
-                  ال
-                  class="text-gray-300 hover:text-brand-gold transition-colors"
+                  class="text-white hover:text-brand-gold transition-colors"
                   >من نحن</a
                 >
               </li>
               <li>
                 <a
                   href="#services"
-                  class="text-gray-300 hover:text-brand-gold transition-colors"
+                  class="text-white hover:text-brand-gold transition-colors"
                   >خدماتنا</a
                 >
               </li>
               <li>
                 <a
                   href="#partners"
-                  class="text-gray-300 hover:text-brand-gold transition-colors"
+                  class="text-white hover:text-brand-gold transition-colors"
                   >شركاؤنا</a
                 >
               </li>
               <li>
                 <a
                   href="about.html"
-                  class="text-gray-300 hover:text-brand-gold transition-colors"
+                  class="text-white hover:text-brand-gold transition-colors"
                   >عن الجمعية</a
                 >
               </li>
             </ul>
           </div>
-
           <div>
             <h4 class="font-bold text-brand-gold mb-4">خدماتنا</h4>
             <ul class="space-y-2 text-sm">
-              <li class="text-gray-300">الإعاشة والتموين</li>
-              <li class="text-gray-300">الخدمات اللوجستية</li>
-              <li class="text-gray-300">خدمات الحج والعمرة</li>
-              <li class="text-gray-300">الضيافة والفندقة</li>
+              <li class="text-white">الإعاشة والتموين</li>
+              <li class="text-white">الخدمات اللوجستية</li>
+              <li class="text-white">خدمات الحج والعمرة</li>
+              <li class="text-white">الضيافة والفندقة</li>
             </ul>
           </div>
-
           <div>
             <h4 class="font-bold text-brand-gold mb-4">تواصل معنا</h4>
             <div class="space-y-3 text-sm">
               <div class="flex items-center gap-3">
-                <i class="fas fa-envelope text-brand-gold"></i>
-                <span class="text-gray-300">ekram@ekram.org.sa</span>
+                <i class="fas fa-envelope text-brand-gold"></i
+                ><span class="text-white">ekram@ekram.org.sa</span>
               </div>
               <div class="flex items-center gap-3">
-                <i class="fas fa-phone text-brand-gold"></i>
-                <span class="text-gray-300">0536060603</span>
+                <i class="fas fa-phone text-brand-gold"></i
+                ><span class="text-white">0536060603</span>
               </div>
               <div class="flex items-center gap-3">
-                <i class="fas fa-map-marker-alt text-brand-gold"></i>
-                <span class="text-gray-300"
-                  >مكة - الشرائع - مخطط 9</span
-                >
+                <i class="fas fa-map-marker-alt text-brand-gold"></i
+                ><span class="text-white">مكة - الشرائع - مخطط 9</span>
               </div>
             </div>
-
             <div class="flex gap-3 mt-4">
               <a
                 href="#"
                 class="w-10 h-10 bg-brand-gold/20 rounded-full flex items-center justify-center hover:bg-brand-gold transition-colors"
-              >
-                <i
+                ><i
                   class="fab fa-instagram text-brand-gold hover:text-white"
-                ></i>
-              </a>
+                ></i
+              ></a>
               <a
                 href="#"
                 class="w-10 h-10 bg-brand-gold/20 rounded-full flex items-center justify-center hover:bg-brand-gold transition-colors"
-              >
-                <i class="fab fa-twitter text-brand-gold hover:text-white"></i>
-              </a>
+                ><i class="fab fa-twitter text-brand-gold hover:text-white"></i
+              ></a>
               <a
                 href="#"
                 class="w-10 h-10 bg-brand-gold/20 rounded-full flex items-center justify-center hover:bg-brand-gold transition-colors"
-              >
-                <i class="fab fa-facebook text-brand-gold hover:text-white"></i>
-              </a>
+                ><i class="fab fa-facebook text-brand-gold hover:text-white"></i
+              ></a>
               <a
                 href="#"
                 class="w-10 h-10 bg-brand-gold/20 rounded-full flex items-center justify-center hover:bg-brand-gold transition-colors"
-              >
-                <i class="fab fa-linkedin text-brand-gold hover:text-white"></i>
-              </a>
+                ><i class="fab fa-linkedin text-brand-gold hover:text-white"></i
+              ></a>
             </div>
           </div>
         </div>
-
         <div
           class="border-t border-gray-700 pt-8 flex flex-col md:flex-row items-center justify-between gap-4"
         >
@@ -1192,20 +1216,20 @@
             >
               <i class="fas fa-heart text-white text-sm"></i>
             </div>
-            <span class="text-gray-300"
-              >© <span id="year">2024</span> جميع الحقوق محفوظة لجمعية ضيوف
+            <span class="text-white"
+              >© <span id="year">2025</span> جميع الحقوق محفوظة لجمعية ضيوف
               الحرمين الشريفين التعاونية</span
             >
           </div>
           <div class="flex items-center gap-6 text-sm">
             <a
               href="#"
-              class="text-gray-300 hover:text-brand-gold transition-colors"
+              class="text-white hover:text-brand-gold transition-colors"
               >سياسة الخصوصية</a
             >
             <a
               href="#"
-              class="text-gray-300 hover:text-brand-gold transition-colors"
+              class="text-white hover:text-brand-gold transition-colors"
               >الشروط والأحكام</a
             >
           </div>
@@ -1213,7 +1237,6 @@
       </div>
     </footer>
 
-    <!-- Scripts -->
     <script src="assets/js/main.js"></script>
   </body>
 </html>

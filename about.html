@@ -6,78 +6,96 @@
     <title>عن الجمعية - جمعية ضيوف الحرمين الشريفين التعاونية</title>
     <meta name="description" content="تعرف على رؤية ورسالة وقيم جمعية ضيوف الحرمين الشريفين التعاونية">
     
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     
-    <!-- TailwindCSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            gold: '#c1912c',
-                            'light-gold': '#d4a84a',
-                            'dark-gold': '#a67d1f',
-                            black: '#1a1a1a',
-                            gray: '#2a2a2a',
-                            ink: '#1a1a1a',
-                        }
-                    },
-                    fontFamily: {
-                        arabic: ['Cairo', 'Segoe UI', 'Tahoma', 'Geneva', 'Verdana', 'sans-serif'],
-                    },
-                    animation: {
-                        'fade-in-up': 'fadeInUp 0.8s ease-out',
-                        'fade-in-right': 'fadeInRight 0.8s ease-out',
-                        'bounce-slow': 'bounce 3s infinite',
-                        'pulse-slow': 'pulse 3s infinite',
-                    }
-                }
+      // --- START: Full Tailwind CSS Configuration ---
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                gold: '#c1912c',
+                'light-gold': '#d4a84a',
+                'dark-gold': '#a67d1f',
+                black: '#1a1a1a',
+                gray: '#2a2a2a',
+                ink: '#1a1a1a',
+              }
+            },
+            fontFamily: {
+              arabic: ['Cairo', 'Segoe UI', 'Tahoma', 'Geneva', 'Verdana', 'sans-serif'],
+            },
+            animation: {
+              'fade-in-up': 'fadeInUp 0.8s ease-out',
+              'fade-in-right': 'fadeInRight 0.8s ease-out',
+              'bounce-slow': 'bounce 3s infinite',
+              'pulse-slow': 'pulse 3s infinite',
+            },
+             keyframes: {
+              fadeInUp: {
+                "0%": { opacity: "0", transform: "translateY(20px)" },
+                "100%": { opacity: "1", transform: "translateY(0)" },
+              },
+              fadeInRight: {
+                "0%": { opacity: "0", transform: "translateX(-20px)" },
+                "100%": { opacity: "1", transform: "translateX(0)" },
+              },
             }
+          }
         }
+      }
+      // --- END: Full Tailwind CSS Configuration ---
     </script>
     
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+      .loading-overlay {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: white; display: flex; align-items: center; justify-content: center;
+        z-index: 9999; opacity: 1; transition: opacity 0.3s ease;
+      }
+      .loading-overlay.hidden { opacity: 0; pointer-events: none; }
+      .loader {
+        width: 50px; height: 50px; border: 3px solid rgba(193, 145, 44, 0.2);
+        border-top: 3px solid #c1912c; border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+        box-shadow: 0 0 20px rgba(193, 145, 44, 0.3);
+      }
+      @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+      .reveal {
+        opacity: 0; transform: translateY(30px); transition: all 0.8s ease;
+      }
+      .reveal.show {
+        opacity: 1; transform: translateY(0);
+      }
+    </style>
     
-    <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="font-arabic text-brand-ink bg-white">
-    <!-- Loading Overlay -->
+<body class="font-arabic text-brand-ink bg-white overflow-x-hidden">
     <div class="loading-overlay">
         <div class="loader"></div>
     </div>
 
-    <!-- Header -->
-<header
-      class="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm"
-    >
-            <div class="container mx-auto max-w-7xl px-4 flex items-center justify-between h-20">
+    <header class="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
+        <div class="container mx-auto max-w-7xl px-4 h-20">
+          <div class="flex items-center justify-between h-full">
+            <a href="index.html" class="flex items-center gap-3 group">
+                <img src="assets/images/IMG-20250828-WA0003.png" alt="شعار الجمعية"
+                class="h-28 md:h-32 w-auto group-hover:scale-105 transition-transform" loading="lazy">
+            </a>
+        
+            <button id="navToggle" class="md:hidden inline-flex items-center justify-center w-12 h-12 rounded-lg border border-gray-200 hover:bg-gray-100 transition">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+              </svg>
+            </button>
+          </div>
           
-          <!-- اللوجو -->
-          <a href="index.html" class="flex items-center gap-3 group">
-              <img src="assets/images/IMG-20250828-WA0003.png" alt="شعار الجمعية"
-              class="h-28 md:h-32 w-auto group-hover:scale-105 transition-transform" loading="lazy">
-         
-          </a>
-      
-          <!-- زر القائمة للموبايل -->
-          <button id="navToggle"
-                  class="md:hidden inline-flex items-center justify-center w-12 h-12 rounded-lg border border-gray-200 hover:bg-gray-100 transition">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                 stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M4 6h16M4 12h16M4 18h16"/>
-            </svg>
-          </button>
-      
-          <!-- روابط سطح المكتب -->
-          <nav class="hidden md:flex items-center gap-8 text-sm font-medium">
+          <nav class="hidden md:flex items-center justify-center gap-8 text-sm font-medium absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
             <a href="#vision" class="text-gray-700 hover:text-brand-gold transition-colors">رؤيتنا</a>
             <a href="#mission" class="text-gray-700 hover:text-brand-gold transition-colors">رسالتنا</a>
             <a href="#values" class="text-gray-700 hover:text-brand-gold transition-colors">قيمنا</a>
@@ -91,9 +109,7 @@
           </nav>
         </div>
       
-        <!-- قائمة الموبايل -->
-        <div id="mobileMenu"
-             class="md:hidden hidden border-t border-gray-200 bg-white/80 backdrop-blur-md">
+        <div id="mobileMenu" class="md:hidden hidden border-t border-gray-200 bg-white/80 backdrop-blur-md">
           <div class="container mx-auto max-w-7xl px-4 py-4 space-y-2">
             <a href="#vision" class="block py-2 text-gray-700 hover:text-brand-gold transition-colors">رؤيتنا</a>
             <a href="#mission" class="block py-2 text-gray-700 hover:text-brand-gold transition-colors">رسالتنا</a>
@@ -107,36 +123,32 @@
             </a>
           </div>
         </div>
-      </header>
+    </header>
 
-   
-
-    <!-- About Content -->
     <section class="py-20 bg-white">
         <div class="container mx-auto max-w-7xl px-4">
-            <!-- رؤيتنا  -->
             <div id="vision" class="reveal mb-16">
                 <div class="text-center mb-8">
-                    <span class="section-label text-4xl bg-white/80 px-5 py-2 rounded-full">
+                    <span class="inline-block bg-white/80 px-5 py-2 rounded-full text-brand-gold text-4xl font-bold">
                         <i class="fas fa-eye"></i>
                         رؤيتنا
                     </span>
                     <h2 class="text-2xl font-bold text-brand-ink leading-tight mt-4 mb-4">الريادة في خدمة ضيوف الرحمن</h2>
                 </div>
                 <div class="grid lg:grid-cols-2 gap-8 items-start">
-                    <div class="px-4 order-2 lg:order-1 flex items-center lg:min-h-[450px]">
+                    <div class="px-4 order-2 lg:order-2 flex items-center lg:min-h-[450px]">
                         <p class="text-xl md:text-2xl text-brand-gray leading-relaxed tracking-wide">
                             نسعى لأن نكون الشريك الموثوق والرائد في تقديم خدمات الإعاشة والتموين والضيافة 
                             لضيوف الرحمن، مع الحفاظ على أعلى معايير الجودة والسلامة.
                         </p>
                     </div>
                     <div class="flex justify-center order-1 lg:order-2">
-                        <div class="about-seven__single w-full max-w-sm md:max-w-md lg:max-w-lg">
-                            <div class="about-seven__content relative">
-                                <div class="about-seven__image relative pb-6 pl-6 w-full aspect-square" style="border-radius: 0 50% 50% 50%; background: linear-gradient(135deg, #c1912c 0%, #d4a84a 50%, #f4d03f 100%);">
-                                    <img src="assets/images/pexels-bayu-prakosa-243773629-33666860.webp" alt="رؤيتنا" class="w-full h-full object-cover shadow-2xl" style="border-radius: 0 50% 50% 50%;" loading="lazy">
+                        <div class="w-full max-w-sm md:max-w-md lg:max-w-lg">
+                            <div class="relative">
+                                <div class="relative pb-6 pl-6 w-full aspect-square" style="border-radius: 0 50% 50% 50%; background: linear-gradient(135deg, #c1912c 0%, #d4a84a 50%, #f4d03f 100%);">
+                                    <img src="assets/images/mecca-2.jpg" alt="رؤيتنا" class="w-full h-full object-cover shadow-2xl" style="border-radius: 0 50% 50% 50%;" loading="lazy">
                                 </div>
-                                <div class="about-seven__logo absolute -top-6 md:-top-10 -left-0">
+                                <div class="absolute -top-6 md:-top-10 -left-0">
                                     <div class="w-16 h-16 md:w-24 md:h-24 bg-white rounded-lg p-2 md:p-3 shadow-xl border-4 border-brand-gold">
                                         <img src="assets/images/IMG-20250828-WA0003.png" alt="شعار الجمعية" class="w-full h-full object-contain" loading="lazy">
                                     </div>
@@ -147,23 +159,22 @@
                 </div>
             </div>
 
-            <!-- رسالتنا -->
             <div id="mission" class="reveal mb-16">
                 <div class="text-center mb-8">
-                    <span class="section-label text-4xl bg-white/80 px-5 py-2 rounded-full">
+                    <span class="inline-block bg-white/80 px-5 py-2 rounded-full text-brand-gold text-4xl font-bold">
                         <i class="fas fa-bullseye"></i>
                         رسالتنا
                     </span>
                     <h2 class="text-2xl font-bold text-brand-ink leading-tight mt-4 mb-4">خدمة متميزة بمعايير عالمية</h2>
                 </div>
                 <div class="grid lg:grid-cols-2 gap-8 items-start">
-                    <div class="flex justify-center order-1 lg:order-2">
-                        <div class="about-seven__single w-full max-w-sm md:max-w-md lg:max-w-lg">
-                            <div class="about-seven__content relative">
-                                <div class="about-seven__image relative pb-6 pl-6 w-full aspect-square" style="border-radius: 0 50% 50% 50%; background: linear-gradient(135deg, #c1912c 0%, #d4a84a 50%, #f4d03f 100%);">
-                                    <img src="assets/images/hajj-pilgrims.jpg" alt="رسالتنا" class="w-full h-full object-cover shadow-2xl" style="border-radius: 0 50% 50% 50%;" loading="lazy">
+                    <div class="flex justify-center order-1 lg:order-1">
+                         <div class="w-full max-w-sm md:max-w-md lg:max-w-lg">
+                            <div class="relative">
+                                <div class="relative pb-6 pr-6 w-full aspect-square" style="border-radius: 50% 0 50% 50% ; background: linear-gradient(135deg, #c1912c 0%, #d4a84a 50%, #f4d03f 100%);">
+                                    <img src="assets/images/hajj-pilgrims.jpg" alt="رسالتنا" class="w-full h-full object-cover shadow-2xl" style="border-radius: 50% 0 50% 50%;" loading="lazy">
                                 </div>
-                                <div class="about-seven__logo absolute -top-2 md:-top-3 -left-2 md:-left-3">
+                                <div class="absolute -top-2 md:-top-3 -right-2 md:-right-3">
                                     <div class="w-16 h-16 md:w-24 md:h-24 bg-white rounded-lg p-2 md:p-3 shadow-xl border-4 border-brand-gold">
                                         <img src="assets/images/IMG-20250828-WA0003.png" alt="شعار الجمعية" class="w-full h-full object-contain" loading="lazy">
                                     </div>
@@ -171,7 +182,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="order-2 lg:order-1 px-4 flex items-center lg:min-h-[450px]">
+                    <div class="order-2 lg:order-2 px-4 flex items-center lg:min-h-[450px]">
                         <p class="text-xl md:text-2xl text-brand-gray leading-relaxed tracking-wide">
                             تقديم خدمات الحج والعمرة بمواصفات ومعايير عالمية تحقق رغبات ضيوف الرحمن، 
                             مع التركيز على الابتكار والاستدامة في جميع خدماتنا.
@@ -180,9 +191,8 @@
                 </div>
             </div>
 
-            <!-- قيمنا  -->
             <div id="values" class="reveal text-center mb-20">
-                <span class="section-label text-3xl bg-white/80 px-5 py-2 rounded-full">
+                <span class="inline-block bg-white/80 px-5 py-2 rounded-full text-brand-gold text-3xl font-bold">
                     <i class="fas fa-star"></i>
                     قيمنا
                 </span>
@@ -201,7 +211,6 @@
                         </p>
                     </div>
                 </div>
-
                 <div class="reveal text-center group">
                     <div class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-8 h-full hover:shadow-lg transition-all duration-300 group-hover:scale-105">
                         <div class="w-20 h-20 bg-gradient-to-br from-brand-gold to-brand-light-gold rounded-full flex items-center justify-center mx-auto mb-6">
@@ -213,7 +222,6 @@
                         </p>
                     </div>
                 </div>
-
                 <div class="reveal text-center group">
                     <div class="bg-gradient-to-br from-amber-50 to-amber-100 rounded-2xl p-8 h-full hover:shadow-lg transition-all duration-300 group-hover:scale-105">
                         <div class="w-20 h-20 bg-gradient-to-br from-brand-dark-gold to-brand-gold rounded-full flex items-center justify-center mx-auto mb-6">
@@ -225,7 +233,6 @@
                         </p>
                     </div>
                 </div>
-
                 <div class="reveal text-center group">
                     <div class="bg-gradient-to-br from-yellow-50 to-amber-50 rounded-2xl p-8 h-full hover:shadow-lg transition-all duration-300 group-hover:scale-105">
                         <div class="w-20 h-20 bg-gradient-to-br from-brand-light-gold to-brand-gold rounded-full flex items-center justify-center mx-auto mb-6">
@@ -239,22 +246,15 @@
                 </div>
             </div>
 
-            <!-- أهدافنا -->
             <div id="goals" class="reveal relative overflow-hidden rounded-3xl">
-                <!-- Pattern Background -->
                 <div class="absolute inset-0 z-0">
-                    <img
-                        src="assets/images/patter.png"
-                        alt="Pattern Background"
-                        class="w-full h-full object-cover opacity-20"
-                        loading="lazy"
-                    />
+                    <img src="assets/images/patter.png" alt="Pattern Background" class="w-full h-full object-cover opacity-20" loading="lazy"/>
                     <div class="absolute inset-0 bg-gradient-to-br from-white/85 to-slate-50/85"></div>
                 </div>
                 
                 <div class="relative z-10 p-12">
                     <div class="text-center  mb-16">
-                        <span class="section-label text-3xl bg-white/80 px-5 py-2 rounded-full">
+                        <span class="inline-block bg-white/80 px-5 py-2 rounded-full text-brand-gold text-3xl font-bold">
                             <i class="fas fa-target"></i>
                             أهدافنا
                         </span>
@@ -272,7 +272,6 @@
                                     <p class="text-brand-ink leading-relaxed tracking-wide">تقديم برامج وخدمات متنوعة لضيوف الرحمن</p>
                                 </div>
                             </div>
-                            
                             <div class="flex items-start gap-4 group">
                                 <div class="w-12 h-12 bg-gradient-to-br from-brand-gold to-brand-light-gold rounded-full flex items-center justify-center flex-shrink-0 mt-1 group-hover:scale-110 transition-transform">
                                     <i class="fas fa-chart-line text-white text-lg"></i>
@@ -282,7 +281,6 @@
                                     <p class="text-brand-ink leading-relaxed tracking-wide">رفع مستوى الخدمات المقدمة لضيوف الرحمن في قطاع الحج والعمرة</p>
                                 </div>
                             </div>
-                            
                             <div class="flex items-start gap-4 group">
                                 <div class="w-12 h-12 bg-gradient-to-br from-brand-gold to-brand-light-gold rounded-full flex items-center justify-center flex-shrink-0 mt-1 group-hover:scale-110 transition-transform">
                                     <i class="fas fa-lightbulb text-white text-lg"></i>
@@ -292,7 +290,6 @@
                                     <p class="text-brand-ink leading-relaxed tracking-wide">تقديم خدمات وحلول مبتكرة تلبي رغبات جميع الأطراف</p>
                                 </div>
                             </div>
-                            
                             <div class="flex items-start gap-4 group">
                                 <div class="w-12 h-12 bg-gradient-to-br from-brand-gold to-brand-light-gold rounded-full flex items-center justify-center flex-shrink-0 mt-1 group-hover:scale-110 transition-transform">
                                     <i class="fas fa-chart-bar text-white text-lg"></i>
@@ -314,7 +311,6 @@
                                     <p class="text-brand-ink leading-relaxed tracking-wide">مواكبة أحدث التطورات التكنولوجية في تقديم خدمات الحج والعمرة</p>
                                 </div>
                             </div>
-                            
                             <div class="flex items-start gap-4 group">
                                 <div class="w-12 h-12 bg-gradient-to-br from-brand-gold to-brand-light-gold rounded-full flex items-center justify-center flex-shrink-0 mt-1 group-hover:scale-110 transition-transform">
                                     <i class="fas fa-shield-alt text-white text-lg"></i>
@@ -324,7 +320,6 @@
                                     <p class="text-brand-ink leading-relaxed tracking-wide">تحقيق أمن وسلامة ورفاهية ضيوف الرحمن</p>
                                 </div>
                             </div>
-                            
                             <div class="flex items-start gap-4 group">
                                 <div class="w-12 h-12 bg-gradient-to-br from-brand-gold to-brand-light-gold rounded-full flex items-center justify-center flex-shrink-0 mt-1 group-hover:scale-110 transition-transform">
                                     <i class="fas fa-home text-white text-lg"></i>
@@ -334,7 +329,6 @@
                                     <p class="text-brand-ink leading-relaxed tracking-wide">توطين قطاع خدمات الحج والعمرة</p>
                                 </div>
                             </div>
-                            
                             <div class="flex items-start gap-4 group">
                                 <div class="w-12 h-12 bg-gradient-to-br from-brand-gold to-brand-light-gold rounded-full flex items-center justify-center flex-shrink-0 mt-1 group-hover:scale-110 transition-transform">
                                     <i class="fas fa-leaf text-white text-lg"></i>
@@ -351,18 +345,16 @@
         </div>
     </section>
 
-    <!-- لماذا جمعية تغذية ضيوف الحرمين -->
     <section id="why-us" class="py-20 bg-gradient-to-br from-slate-50 to-gray-100">
         <div class="container mx-auto max-w-7xl px-4">
             <div class="reveal text-center mb-16">
-                <span class="section-label text-3xl bg-white/80 px-5 py-2 rounded-full">
+                <span class="inline-block bg-white/80 px-5 py-2 rounded-full text-brand-gold text-3xl font-bold">
                     <i class="fas fa-question-circle"></i>
                     لماذا جمعية تغذية ضيوف الحرمين؟
                 </span>
                 <h2 class="text-2xl font-bold text-brand-ink mb-8 leading-tight">الأسباب التي تجعلنا الخيار الأمثل</h2>
             </div>
 
-            <!-- الصف الأول: 3 كاردات -->
             <div class="grid md:grid-cols-3 gap-8 mb-8">
                 <div class="reveal group">
                     <div class="bg-white rounded-lg p-8 h-full hover:shadow-md transition-all duration-300 border border-gray-200">
@@ -375,7 +367,6 @@
                         </p>
                     </div>
                 </div>
-
                 <div class="reveal group">
                     <div class="bg-white rounded-lg p-8 h-full hover:shadow-md transition-all duration-300 border border-gray-200">
                         <div class="w-16 h-16 bg-gradient-to-br from-brand-gold to-brand-light-gold rounded-full flex items-center justify-center mx-auto mb-6">
@@ -387,7 +378,6 @@
                         </p>
                     </div>
                 </div>
-
                 <div class="reveal group">
                     <div class="bg-white rounded-lg p-8 h-full hover:shadow-md transition-all duration-300 border border-gray-200">
                         <div class="w-16 h-16 bg-gradient-to-br from-brand-gold to-brand-light-gold rounded-full flex items-center justify-center mx-auto mb-6">
@@ -401,7 +391,6 @@
                 </div>
             </div>
 
-            <!-- الصف الثاني: كاردتان في المنتصف -->
             <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
                 <div class="reveal group">
                     <div class="bg-white rounded-lg p-8 h-full hover:shadow-md transition-all duration-300 border border-gray-200">
@@ -414,7 +403,6 @@
                         </p>
                     </div>
                 </div>
-
                 <div class="reveal group">
                     <div class="bg-white rounded-lg p-8 h-full hover:shadow-md transition-all duration-300 border border-gray-200">
                         <div class="w-16 h-16 bg-gradient-to-br from-brand-gold to-brand-light-gold rounded-full flex items-center justify-center mx-auto mb-6">
@@ -430,11 +418,10 @@
         </div>
     </section>
 
-    <!-- Contact Section -->
     <section id="contact" class="py-20 bg-gray-50">
         <div class="container mx-auto max-w-7xl px-4">
             <div class="text-center mb-20">
-                <span class="section-label text-3xl bg-white/80 px-5 py-2 rounded-full">
+                <span class="inline-block bg-white/80 px-5 py-2 rounded-full text-brand-gold text-3xl font-bold">
                     <i class="fas fa-envelope"></i>
                     تواصل معنا
                 </span>
@@ -455,7 +442,6 @@
                             </p>
                         </div>
                     </div>
-
                     <div class="flex items-start gap-4 p-6 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
                         <div class="w-14 h-14 bg-gradient-to-br from-brand-gold to-brand-light-gold rounded-full flex items-center justify-center flex-shrink-0">
                             <i class="fas fa-phone text-white text-lg"></i>
@@ -467,7 +453,6 @@
                             </p>
                         </div>
                     </div>
-
                     <div class="flex items-start gap-4 p-6 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow">
                         <div class="w-14 h-14 bg-gradient-to-br from-brand-gold to-brand-light-gold rounded-full flex items-center justify-center flex-shrink-0">
                             <i class="fas fa-envelope text-white text-lg"></i>
@@ -513,164 +498,68 @@
         </div>
     </section>
 
-    <!-- Footer -->
-  <footer class="bg-brand-ink text-white py-12 relative overflow-hidden">
-      <!-- Pattern Background -->
+    <footer class="bg-brand-ink text-white py-12 relative overflow-hidden">
       <div class="absolute inset-0 z-0">
-        <img
-          src="assets/images/patter.png"
-          alt="Pattern Background"
-          class="w-full h-full object-cover opacity-15 footer-bg-scroll"
-          loading="lazy"
-        />
+        <img src="assets/images/patter.png" alt="Pattern Background" class="w-full h-full object-cover opacity-15" loading="lazy" />
         <div class="absolute inset-0 "></div>
       </div>
       <div class="container mx-auto max-w-7xl px-4 relative z-10">
         <div class="grid md:grid-cols-4 gap-8 mb-8">
           <div class="space-y-4">
             <div class="flex items-center gap-3">
-              <img
-                src="assets/images/IMG-20250828-WA0003.png"
-                alt="شعار الجمعية"
-                class="h-32 w-auto bg-white rounded-lg p-2"
-                loading="lazy"
-              />
+              <img src="assets/images/logo0.png" alt="شعار الجمعية" class="h-32 w-auto" loading="lazy"/>
             </div>
-            <p class="text-gray-300 text-sm leading-relaxed">
+            <p class="text-white text-sm leading-relaxed">
               نخدم ضيوف الرحمن بأعلى معايير الجودة والكفاءة في الإعاشة والتموين
               والضيافة.
             </p>
           </div>
-
           <div>
             <h4 class="font-bold text-brand-gold mb-4">روابط سريعة</h4>
             <ul class="space-y-2 text-sm">
-              <li>
-                <a
-                  href="#about"
-                  ال
-                  class="text-gray-300 hover:text-brand-gold transition-colors"
-                  >من نحن</a
-                >
-              </li>
-              <li>
-                <a
-                  href="#services"
-                  class="text-gray-300 hover:text-brand-gold transition-colors"
-                  >خدماتنا</a
-                >
-              </li>
-              <li>
-                <a
-                  href="#partners"
-                  class="text-gray-300 hover:text-brand-gold transition-colors"
-                  >شركاؤنا</a
-                >
-              </li>
-              <li>
-                <a
-                  href="about.html"
-                  class="text-gray-300 hover:text-brand-gold transition-colors"
-                  >عن الجمعية</a
-                >
-              </li>
+              <li><a href="#about" class="text-white hover:text-brand-gold transition-colors">من نحن</a></li>
+              <li><a href="#services" class="text-white hover:text-brand-gold transition-colors">خدماتنا</a></li>
+              <li><a href="#partners" class="text-white hover:text-brand-gold transition-colors">شركاؤنا</a></li>
+              <li><a href="about.html" class="text-white hover:text-brand-gold transition-colors">عن الجمعية</a></li>
             </ul>
           </div>
-
           <div>
             <h4 class="font-bold text-brand-gold mb-4">خدماتنا</h4>
             <ul class="space-y-2 text-sm">
-              <li class="text-gray-300">الإعاشة والتموين</li>
-              <li class="text-gray-300">الخدمات اللوجستية</li>
-              <li class="text-gray-300">خدمات الحج والعمرة</li>
-              <li class="text-gray-300">الضيافة والفندقة</li>
+              <li class="text-white">الإعاشة والتموين</li>
+              <li class="text-white">الخدمات اللوجستية</li>
+              <li class="text-white">خدمات الحج والعمرة</li>
+              <li class="text-white">الضيافة والفندقة</li>
             </ul>
           </div>
-
           <div>
             <h4 class="font-bold text-brand-gold mb-4">تواصل معنا</h4>
             <div class="space-y-3 text-sm">
-              <div class="flex items-center gap-3">
-                <i class="fas fa-envelope text-brand-gold"></i>
-                <span class="text-gray-300">ekram@ekram.org.sa</span>
-              </div>
-              <div class="flex items-center gap-3">
-                <i class="fas fa-phone text-brand-gold"></i>
-                <span class="text-gray-300">0536060603</span>
-              </div>
-              <div class="flex items-center gap-3">
-                <i class="fas fa-map-marker-alt text-brand-gold"></i>
-                <span class="text-gray-300"
-                  >مكة - الشرائع - مخطط 9</span
-                >
-              </div>
+              <div class="flex items-center gap-3"><i class="fas fa-envelope text-brand-gold"></i><span class="text-white">ekram@ekram.org.sa</span></div>
+              <div class="flex items-center gap-3"><i class="fas fa-phone text-brand-gold"></i><span class="text-white">0536060603</span></div>
+              <div class="flex items-center gap-3"><i class="fas fa-map-marker-alt text-brand-gold"></i><span class="text-white">مكة - الشرائع - مخطط 9</span></div>
             </div>
-
             <div class="flex gap-3 mt-4">
-              <a
-                href="#"
-                class="w-10 h-10 bg-brand-gold/20 rounded-full flex items-center justify-center hover:bg-brand-gold transition-colors"
-              >
-                <i
-                  class="fab fa-instagram text-brand-gold hover:text-white"
-                ></i>
-              </a>
-              <a
-                href="#"
-                class="w-10 h-10 bg-brand-gold/20 rounded-full flex items-center justify-center hover:bg-brand-gold transition-colors"
-              >
-                <i class="fab fa-twitter text-brand-gold hover:text-white"></i>
-              </a>
-              <a
-                href="#"
-                class="w-10 h-10 bg-brand-gold/20 rounded-full flex items-center justify-center hover:bg-brand-gold transition-colors"
-              >
-                <i class="fab fa-facebook text-brand-gold hover:text-white"></i>
-              </a>
-              <a
-                href="#"
-                class="w-10 h-10 bg-brand-gold/20 rounded-full flex items-center justify-center hover:bg-brand-gold transition-colors"
-              >
-                <i class="fab fa-linkedin text-brand-gold hover:text-white"></i>
-              </a>
+              <a href="#" class="w-10 h-10 bg-brand-gold/20 rounded-full flex items-center justify-center hover:bg-brand-gold transition-colors"><i class="fab fa-instagram text-brand-gold hover:text-white"></i></a>
+              <a href="#" class="w-10 h-10 bg-brand-gold/20 rounded-full flex items-center justify-center hover:bg-brand-gold transition-colors"><i class="fab fa-twitter text-brand-gold hover:text-white"></i></a>
+              <a href="#" class="w-10 h-10 bg-brand-gold/20 rounded-full flex items-center justify-center hover:bg-brand-gold transition-colors"><i class="fab fa-facebook text-brand-gold hover:text-white"></i></a>
+              <a href="#" class="w-10 h-10 bg-brand-gold/20 rounded-full flex items-center justify-center hover:bg-brand-gold transition-colors"><i class="fab fa-linkedin text-brand-gold hover:text-white"></i></a>
             </div>
           </div>
         </div>
-
-        <div
-          class="border-t border-gray-700 pt-8 flex flex-col md:flex-row items-center justify-between gap-4"
-        >
+        <div class="border-t border-gray-700 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <div class="flex items-center gap-3">
-            <div
-              class="w-8 h-8 bg-brand-gold rounded-full flex items-center justify-center"
-            >
-              <i class="fas fa-heart text-white text-sm"></i>
-            </div>
-            <span class="text-gray-300"
-              >© <span id="year">2024</span> جميع الحقوق محفوظة لجمعية ضيوف
-              الحرمين الشريفين التعاونية</span
-            >
+            <div class="w-8 h-8 bg-brand-gold rounded-full flex items-center justify-center"><i class="fas fa-heart text-white text-sm"></i></div>
+            <span class="text-white">© <span id="year">2025</span> جميع الحقوق محفوظة لجمعية ضيوف الحرمين الشريفين التعاونية</span>
           </div>
           <div class="flex items-center gap-6 text-sm">
-            <a
-              href="#"
-              class="text-gray-300 hover:text-brand-gold transition-colors"
-              >سياسة الخصوصية</a
-            >
-            <a
-              href="#"
-              class="text-gray-300 hover:text-brand-gold transition-colors"
-              >الشروط والأحكام</a
-            >
+            <a href="#" class="text-white hover:text-brand-gold transition-colors">سياسة الخصوصية</a>
+            <a href="#" class="text-white hover:text-brand-gold transition-colors">الشروط والأحكام</a>
           </div>
         </div>
       </div>
     </footer>
 
-
-    <!-- JavaScript -->
-    <!-- <script src="assets/js/animations.js"></script> -->
     <script src="assets/js/main.js"></script>
 </body>
 </html>
-

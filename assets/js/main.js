@@ -176,33 +176,46 @@ class CharityWebsite {
     // Cache DOM elements to avoid repeated queries
     const lightRays = hero.querySelector(".hero-light-rays");
     const pattern = hero.querySelector(".hero-pattern");
-
-    // Mouse movement parallax effect
-    hero.addEventListener("mousemove", (e) => {
+    let animationId;
+    
+    // Throttle mouse movement for better performance
+    const throttledMouseMove = this.throttle((e) => {
       const { clientX, clientY } = e;
       const { innerWidth, innerHeight } = window;
 
-      const xPos = (clientX / innerWidth - 0.5) * 20;
-      const yPos = (clientY / innerHeight - 0.5) * 20;
+      const xPos = (clientX / innerWidth - 0.5) * 10;
+      const yPos = (clientY / innerHeight - 0.5) * 10;
 
-      if (lightRays) {
-        lightRays.style.transform = `translate(${xPos}px, ${yPos}px)`;
-      }
+      // Cancel previous animation frame
+      if (animationId) cancelAnimationFrame(animationId);
+      
+      animationId = requestAnimationFrame(() => {
+        if (lightRays) {
+          lightRays.style.transform = `translate3d(${xPos}px, ${yPos}px, 0)`;
+        }
 
-      if (pattern) {
-        pattern.style.transform = `translate(${-xPos * 0.5}px, ${-yPos * 0.5}px)`;
-      }
-    });
+        if (pattern) {
+          pattern.style.transform = `translate3d(${-xPos * 0.3}px, ${-yPos * 0.3}px, 0)`;
+        }
+      });
+    }, 32); // Reduced to 30fps for better performance
+
+    // Mouse movement parallax effect with throttling
+    hero.addEventListener("mousemove", throttledMouseMove);
 
     // Reset on mouse leave
     hero.addEventListener("mouseleave", () => {
-      if (lightRays) {
-        lightRays.style.transform = "translate(0px, 0px)";
-      }
+      if (animationId) cancelAnimationFrame(animationId);
+      
+      animationId = requestAnimationFrame(() => {
+        if (lightRays) {
+          lightRays.style.transform = "translate3d(0px, 0px, 0)";
+        }
 
-      if (pattern) {
-        pattern.style.transform = "translate(0px, 0px)";
-      }
+        if (pattern) {
+          pattern.style.transform = "translate3d(0px, 0px, 0)";
+        }
+      });
     });
   }
 
@@ -226,31 +239,38 @@ class CharityWebsite {
     progressBar.className = "scroll-progress";
     document.body.appendChild(progressBar);
 
+    // Cache scroll rotate patterns
+    const scrollRotatePatterns = document.querySelectorAll(".scroll-rotate");
+    let scrollAnimationId;
+
     const throttledScroll = this.throttle(() => {
       const scrollTop = document.documentElement.scrollTop;
       const scrollHeight =
         document.documentElement.scrollHeight -
         document.documentElement.clientHeight;
-      if (scrollHeight > 0) {
-        const scrollPercent = (scrollTop / scrollHeight) * 100;
-        progressBar.style.width =
-          Math.min(100, Math.max(0, scrollPercent)) + "%";
-      }
+      
+      // Cancel previous animation frame
+      if (scrollAnimationId) cancelAnimationFrame(scrollAnimationId);
+      
+      scrollAnimationId = requestAnimationFrame(() => {
+        if (scrollHeight > 0) {
+          const scrollPercent = (scrollTop / scrollHeight) * 100;
+          progressBar.style.width =
+            Math.min(100, Math.max(0, scrollPercent)) + "%";
+        }
 
-      // Scroll rotate patterns
-      this.updateScrollRotate(scrollTop);
-    }, 16);
+        // Update scroll rotate patterns
+        const rotation = scrollTop * 0.004;
+        scrollRotatePatterns.forEach((pattern) => {
+          pattern.style.transform = `rotateZ(${rotation}deg)`;
+        });
+      });
+    }, 32); // Reduced to 30fps
 
-    window.addEventListener("scroll", throttledScroll);
+    window.addEventListener("scroll", throttledScroll, { passive: true });
   }
 
-  updateScrollRotate(scrollTop) {
-    const patterns = document.querySelectorAll(".scroll-rotate");
-    patterns.forEach((pattern) => {
-      const rotation = scrollTop * 0.008;
-      pattern.style.transform = `rotateZ(${rotation}deg)`;
-    });
-  }
+
 
   setupParticles() {
     const canvas = document.getElementById("particleCanvas");
